@@ -1,0 +1,26 @@
+# Dependencies
+node_modules/
+
+# Environment variables and secrets
+.env
+
+# Generated user data
+data/createdUsers.json
+
+# Test artifacts
+reports/
+screenshots/
+videos/
+logs/
+
+# Playwright artifacts used by Yopmail OTP helper
+test-results/
+playwright-report/
+
+# Operating system files
+.DS_Store
+Thumbs.db
+
+# IDE files
+.vscode/
+.idea/

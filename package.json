@@ -1,0 +1,33 @@
+{
+  "name": "hammerloop-mobile-automation",
+  "version": "1.0.0",
+  "description": "HammerLoop Android mobile automation framework using Appium and JavaScript",
+  "main": "index.js",
+  "scripts": {
+    "test": "mocha \"tests/**/*.spec.js\" --timeout 120000",
+    "test:driver": "mocha tests/driver-session.spec.js --timeout 120000",
+    "test:worker-signup": "mocha tests/worker-signup.spec.js --timeout 120000"
+  },
+  "keywords": [
+    "appium",
+    "android",
+    "mobile-automation",
+    "webdriverio",
+    "hammerloop"
+  ],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "dependencies": {
+    "@wdio/local-runner": "^9.29.1",
+    "@wdio/mocha-framework": "^9.29.1",
+    "@wdio/spec-reporter": "^9.29.1",
+    "appium": "^3.5.2",
+    "dotenv": "^16.4.7",
+    "playwright": "^1.61.1",
+    "webdriverio": "^9.29.1"
+  },
+  "devDependencies": {
+    "appium-uiautomator2-driver": "^8.1.0"
+  }
+}
