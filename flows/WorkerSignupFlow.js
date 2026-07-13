@@ -35,6 +35,10 @@ const {
     saveUser
 } = require('../utils/userRegistry');
 
+const {
+    WorkerOnboardingFlow
+} = require('./WorkerOnboardingFlow');
+
 class WorkerSignupFlow {
     constructor(driver) {
         this.driver = driver;
@@ -146,7 +150,17 @@ class WorkerSignupFlow {
         console.log(
             'Worker signup and OTP verification completed successfully.'
         );
-    }
+
+        /* ======================================================= */
+        /* STEP 7: Complete Worker Profile                         */
+        /* ======================================================= */
+
+        const workerOnboardingFlow =
+            new WorkerOnboardingFlow(this.driver);
+
+        await workerOnboardingFlow
+            .completeWorkerProfile();
+            }
 }
 
 module.exports = {
