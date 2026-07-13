@@ -1,6 +1,6 @@
 /*************************************************************
- * Test: Worker Signup + Complete Profile
- * Purpose: Create a Worker account and complete onboarding.
+ * Test: Employer Signup
+ * Purpose: Create, verify and onboard a new Employer.
  *************************************************************/
 
 const { remote } = require('webdriverio');
@@ -20,7 +20,7 @@ const {
     SignUpFlow
 } = require('../flows/SignUpFlow');
 
-describe('Worker Onboarding', function () {
+describe('Employer Signup', function () {
 
     this.timeout(180000);
 
@@ -36,8 +36,7 @@ describe('Worker Onboarding', function () {
             port:
                 environment.appiumPort,
 
-            path:
-                '/',
+            path: '/',
 
             capabilities:
                 androidCapabilities
@@ -53,23 +52,26 @@ describe('Worker Onboarding', function () {
     });
 
     it(
-        'should create a Worker account and complete onboarding',
-
+        'should create, verify and onboard an Employer',
         async function () {
 
-            const workerUser =
-                createUser('Worker');
+            const employerUser =
+                createUser(
+                    'Employer'
+                );
 
             console.log(
-                `Creating Worker account: ${workerUser.email}`
+                `Creating Employer account: ${employerUser.email}`
             );
 
             const signUpFlow =
-                new SignUpFlow(driver);
+                new SignUpFlow(
+                    driver
+                );
 
             await signUpFlow.createAccount(
-                workerUser,
-                'Worker'
+                employerUser,
+                'Employer'
             );
         }
     );

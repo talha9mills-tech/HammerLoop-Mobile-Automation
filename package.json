@@ -3,11 +3,12 @@
   "version": "1.0.0",
   "description": "HammerLoop Android mobile automation framework using Appium and JavaScript",
   "main": "index.js",
-  "scripts": {
-    "test": "mocha \"tests/**/*.spec.js\" --timeout 120000",
-    "test:driver": "mocha tests/driver-session.spec.js --timeout 120000",
-    "test:worker-signup": "mocha tests/worker-signup.spec.js --timeout 120000"
-  },
+"scripts": {
+  "test": "mocha \"tests/**/*.spec.js\" --timeout 180000",
+  "test:driver": "mocha tests/driver-session.spec.js --timeout 120000",
+  "test:worker-onboarding": "mocha tests/worker-onboarding.spec.js --timeout 180000",
+  "test:employer-onboarding": "mocha tests/employer-onboarding.spec.js --timeout 180000"
+},
   "keywords": [
     "appium",
     "android",
