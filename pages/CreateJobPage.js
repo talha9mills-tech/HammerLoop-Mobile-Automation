@@ -105,7 +105,7 @@ class CreateJobPage {
 
         this.jobPostSuccessBanner =
             driver.$(
-                '~Job Post Completed Successfully! Great News! Your Job Post has been Completed. Your Job Post is now live and ready to attract skilled tradesmen. 100%'
+                'android=new UiSelector().descriptionContains("Job Post Completed Successfully!")'
             );
 
         this.viewJobButton =
@@ -160,6 +160,10 @@ class CreateJobPage {
             timeout: 15000
         });
 
+        await this.jobNameInput.click();
+
+        await this.jobNameInput.clearValue();
+
         await this.jobNameInput.setValue(jobTitle);
     }
 
@@ -168,6 +172,10 @@ class CreateJobPage {
         await this.jobDescriptionInput.waitForDisplayed({
             timeout: 15000
         });
+
+        await this.jobDescriptionInput.click();
+
+        await this.jobDescriptionInput.clearValue();
 
         await this.jobDescriptionInput.setValue(description);
     }
@@ -206,6 +214,10 @@ class CreateJobPage {
             timeout: 15000
         });
 
+        await this.durationInput.click();
+
+        await this.durationInput.clearValue();
+
         await this.durationInput.setValue(String(days));
     }
 
@@ -218,6 +230,10 @@ class CreateJobPage {
         await this.payRateInput.waitForDisplayed({
             timeout: 15000
         });
+
+        await this.payRateInput.click();
+
+        await this.payRateInput.clearValue();
 
         await this.payRateInput.setValue(String(rate));
     }

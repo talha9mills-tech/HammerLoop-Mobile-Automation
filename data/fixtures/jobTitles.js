@@ -1,4 +1,4 @@
-const jobTitles = [
+module.exports = [
   'Skilled Professional Needed',
   'Experienced Team Member Required',
   'Field Operations Specialist',
@@ -50,7 +50,3 @@ const jobTitles = [
   'Qualified Professional Position',
   'Field Project Associate'
 ];
-
-module.exports = {
-    jobTitles
-};

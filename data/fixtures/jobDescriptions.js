@@ -1,5 +1,4 @@
-const jobDescriptions = [
-
+module.exports = [
   'We are seeking a dependable professional to support ongoing project work. The ideal candidate will demonstrate reliability, strong communication skills, and a commitment to quality results.',
 
   'Join a growing team working on active projects. Candidates should be motivated, safety-conscious, and capable of working effectively both independently and as part of a team.',
@@ -100,7 +99,3 @@ const jobDescriptions = [
 
   'Join a professional team where your contributions will help drive successful project outcomes while maintaining a strong focus on safety, quality, and collaboration.'
 ];
-
-module.exports = {
-    jobDescriptions
-};
