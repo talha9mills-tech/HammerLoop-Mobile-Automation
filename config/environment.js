@@ -17,8 +17,10 @@ const environment = {
     appActivity: process.env.APP_ACTIVITY || '',
 
     employerEmail: process.env.EMPLOYER_EMAIL,
-
     employerPassword: process.env.EMPLOYER_PASSWORD,
+
+    workerEmail: process.env.WORKER_EMAIL,
+    workerPassword: process.env.WORKER_PASSWORD,
 
     testEnvironment: process.env.TEST_ENV || 'staging'
 };

@@ -190,16 +190,10 @@ class CreateJobFlow {
         /* STEP 9 - Certifications                               */
         /* ===================================================== */
 
-        await this.createJobPage.searchCertification(
-            selectedTrade
-        );
+        await this.createJobPage.searchCertification(selectedTrade);
 
-        await this.createJobPage.verifyTradeVisible(
-            selectedTrade
-        );
-
-        await this.createJobPage.selectFirstCertification();
-
+        await this.createJobPage.selectRandomCertifications();
+        
         await this.createJobPage.tapNextStep();
 
         /* ===================================================== */

@@ -208,15 +208,45 @@ class SignUpPage {
 
     async fillInput(input, value) {
 
-        await input.waitForDisplayed({
-            timeout: 15000
-        });
+        try {
+
+            await input.waitForDisplayed({
+                timeout: 3000
+            });
+
+        } catch {
+
+            /* Field is likely below the keyboard.
+            Hide the keyboard and try again. */
+
+            try {
+
+                await this.driver.hideKeyboard();
+
+            } catch {
+
+                // Keyboard was already hidden.
+            }
+
+            await input.waitForDisplayed({
+                timeout: 15000
+            });
+        }
+
+        try {
+
+            await input.scrollIntoView();
+
+        } catch {
+
+            // Ignore if the driver doesn't support it.
+        }
 
         await input.click();
 
         await input.clearValue();
 
-        await input.setValue(value);
+        await input.setValue(String(value));
     }
 
     async clickCheckbox(checkbox, checkboxName) {

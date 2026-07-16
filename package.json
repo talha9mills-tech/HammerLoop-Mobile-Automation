@@ -8,7 +8,8 @@
   "test:driver": "mocha tests/driver-session.spec.js --timeout 120000",
   "test:worker-onboarding": "mocha tests/worker-onboarding.spec.js --timeout 180000",
   "test:employer-onboarding": "mocha tests/employer-onboarding.spec.js --timeout 180000",
-  "test:create-job": "mocha tests/create-job.spec.js --timeout 300000"
+  "test:create-job": "mocha tests/create-job.spec.js --timeout 300000",
+  "test:worker-job": "mocha tests/worker-job-application.spec.js --timeout 600000"
 },
   "keywords": [
     "appium",

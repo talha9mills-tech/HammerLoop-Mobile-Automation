@@ -68,7 +68,7 @@ function saveJob(job) {
 /* Get Latest Created Job                                    */
 /* ========================================================= */
 
-function getLatestJob() {
+function getLatestCreatedJob() {
 
     if (!fs.existsSync(jobsFilePath)) {
 
@@ -91,5 +91,5 @@ function getLatestJob() {
 
 module.exports = {
     saveJob,
-    getLatestJob
+    getLatestCreatedJob
 };

@@ -286,41 +286,76 @@ class CreateJobPage {
     /* Certifications                                            */
     /* ========================================================= */
 
+    /* ========================================================= */
+    /* STEP 6 - Certifications                                  */
+    /* ========================================================= */
+
     async searchCertification(trade) {
-
-        await this.certificationInput.waitForDisplayed({
-            timeout: 15000
-        });
-
+        await this.certificationInput.waitForDisplayed({ timeout: 15000 });
         await this.certificationInput.click();
-
         await this.certificationInput.clearValue();
-
         await this.certificationInput.setValue(trade);
+        
+        // Wait for results to load
+        await this.driver.pause(1000);
     }
 
-    async verifyTradeVisible(trade) {
-
-        const tradeOption =
-            this.driver.$(`~${trade}`);
-
-        await tradeOption.waitForDisplayed({
-            timeout: 15000
-        });
+    async getAllCertificationOptions() {
+        // Get all visible clickable certification options
+        const allElements = await this.driver.$$(
+            'android=new UiSelector().className("android.view.View").clickable(true)'
+        );
+        
+        // Filter to only certification items (content-desc contains certification-related text)
+        const certifications = [];
+        for (const element of allElements) {
+            const desc = await element.getAttribute('content-desc');
+            // Only include elements that look like certifications
+            if (desc && desc.length > 0 && !desc.includes('Search') && !desc.includes('Cancel')) {
+                certifications.push(element);
+            }
+        }
+        
+        return certifications;
     }
 
-    async selectFirstCertification() {
+        async selectRandomCertifications() {
+        const certifications = await this.getAllCertificationOptions();
+        const totalAvailable = certifications.length;
+        
+        console.log(`📋 Found ${totalAvailable} certification(s) available`);
+        
+        if (totalAvailable === 0) {
+            console.log('⚠️ No certifications found, skipping selection');
+            return;
+        }
+        
+        // Determine how many to select (max 2, min 1)
+        const selectCount = Math.min(2, totalAvailable);
+        console.log(`🎯 Selecting ${selectCount} certification(s)`);
+        
+        // Get random indices
+        const indices = this.getRandomIndices(totalAvailable, selectCount);
+        
+        // Select certifications at random indices
+        for (const index of indices) {
+            await certifications[index].click();
+            console.log(`✅ Selected certification ${index + 1}`);
+            await this.driver.pause(300);
+        }
+    }
 
-        const certification =
-            this.driver.$(
-                '//android.view.View[@content-desc][1]'
-            );
-
-        await certification.waitForDisplayed({
-            timeout: 15000
-        });
-
-        await certification.click();
+    getRandomIndices(total, count) {
+        const indices = [];
+        const available = Array.from({ length: total }, (_, i) => i);
+        
+        for (let i = 0; i < count; i++) {
+            const randomIndex = Math.floor(Math.random() * available.length);
+            indices.push(available[randomIndex]);
+            available.splice(randomIndex, 1);
+        }
+        
+        return indices;
     }
 
     /* ========================================================= */

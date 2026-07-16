@@ -14,6 +14,10 @@ const {
     EmployerDashboardPage
 } = require('../pages/EmployerDashboardPage');
 
+const {
+    WorkerDashboardPage
+} = require('../pages/WorkerDashboardPage');
+
 class LoginFlow {
 
     constructor(driver) {
@@ -25,6 +29,9 @@ class LoginFlow {
 
         this.employerDashboardPage =
             new EmployerDashboardPage(driver);
+
+        this.workerDashboardPage =
+            new WorkerDashboardPage(driver);
     }
 
     /* ========================================================= */
@@ -73,18 +80,14 @@ class LoginFlow {
     /* Login as Worker                                           */
     /* ========================================================= */
 
-    async loginWorker(
-        email,
-        password,
-        workerDashboardPage
-    ) {
+    async loginWorker() {
 
         await this.login(
-            email,
-            password
+            environment.workerEmail,
+            environment.workerPassword
         );
 
-        await workerDashboardPage
+        await this.workerDashboardPage
             .verifyDashboardLoaded();
 
         console.log(
