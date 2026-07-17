@@ -12,6 +12,10 @@ const {
 } = require('./LoginFlow');
 
 const {
+    EmployerDashboardPage
+} = require('../pages/EmployerDashboardPage');
+
+const {
     CreateJobPage
 } = require('../pages/CreateJobPage');
 
@@ -49,6 +53,9 @@ class CreateJobFlow {
         this.loginFlow =
             new LoginFlow(driver);
 
+        this.employerDashboardPage =
+            new EmployerDashboardPage(driver);
+
         this.createJobPage =
             new CreateJobPage(driver);
     }
@@ -77,8 +84,10 @@ class CreateJobFlow {
         /* STEP 3 - Open Create Job Screen                       */
         /* ===================================================== */
 
-        await this.loginFlow
-            .employerDashboardPage
+        await this.employerDashboardPage
+            .verifyDashboardLoaded();
+
+        await this.createJobPage
             .tapAddJob();
 
         /* ===================================================== */

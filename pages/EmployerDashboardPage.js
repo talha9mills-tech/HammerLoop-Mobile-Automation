@@ -1,6 +1,6 @@
 /*************************************************************
  * Page Object: EmployerDashboardPage
- * Purpose: Handle Employer Dashboard actions.
+ * Purpose: Verify Employer Dashboard is loaded successfully.
  *************************************************************/
 
 class EmployerDashboardPage {
@@ -34,36 +34,23 @@ class EmployerDashboardPage {
             timeout: 30000
         });
 
+        await this.addJobButton.waitForDisplayed({
+            timeout: 30000
+        });
+
         if (!await this.findWorkerTab.isDisplayed()) {
 
             throw new Error(
                 'Employer dashboard did not load successfully.'
             );
         }
-    }
 
-    /* ========================================================= */
-    /* Tap Add Job                                                */
-    /* ========================================================= */
+        if (!await this.addJobButton.isDisplayed()) {
 
-    async tapAddJob() {
-
-        await this.addJobButton.waitForDisplayed({
-            timeout: 15000
-        });
-
-        await this.addJobButton.click();
-    }
-
-    /* ========================================================= */
-    /* Start Create Job Flow                                      */
-    /* ========================================================= */
-
-    async startCreateJob() {
-
-        await this.verifyDashboardLoaded();
-
-        await this.tapAddJob();
+            throw new Error(
+                'Add Job button is not visible on Employer dashboard.'
+            );
+        }
     }
 }
 
