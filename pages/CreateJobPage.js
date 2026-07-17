@@ -121,6 +121,22 @@ class CreateJobPage {
             driver.$('~View Job');
     }
 
+    async hideKeyboardIfVisible() {
+
+        try {
+
+            if (await this.driver.isKeyboardShown()) {
+
+                await this.driver.hideKeyboard();
+
+                await this.driver.pause(500);
+            }
+
+        } catch (error) {
+            // Keyboard wasn't visible
+        }
+    }
+
     /* ========================================================= */
     /* Entry Point                                               */
     /* ========================================================= */
@@ -187,6 +203,8 @@ class CreateJobPage {
         await this.jobNameInput.clearValue();
 
         await this.jobNameInput.setValue(jobTitle);
+
+        //await this.hideKeyboardIfVisible();
     }
 
     async enterJobDescription(description) {
@@ -200,6 +218,8 @@ class CreateJobPage {
         await this.jobDescriptionInput.clearValue();
 
         await this.jobDescriptionInput.setValue(description);
+
+        //await this.hideKeyboardIfVisible();
     }
 
     async tapNextStep() {
@@ -241,6 +261,8 @@ class CreateJobPage {
         await this.durationInput.clearValue();
 
         await this.durationInput.setValue(String(days));
+
+        //await this.hideKeyboardIfVisible();
     }
 
     /* ========================================================= */
@@ -258,6 +280,8 @@ class CreateJobPage {
         await this.payRateInput.clearValue();
 
         await this.payRateInput.setValue(String(rate));
+
+        //await this.hideKeyboardIfVisible();
     }
 
     /* ========================================================= */

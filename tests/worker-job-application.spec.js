@@ -20,6 +20,11 @@ const {
     WorkerJobApplicationFlow
 } = require('../flows/WorkerJobApplicationFlow');
 
+const {
+    EmployerAcceptApplicationFlow
+} = require('../flows/EmployerAcceptApplicationFlow');
+
+
 describe('Employer Creates Job -> Worker Applies', function () {
 
     this.timeout(900000);
@@ -79,6 +84,22 @@ describe('Employer Creates Job -> Worker Applies', function () {
 
             await workerJobApplicationFlow
                 .applyForLatestJob();
+
+            /* ============================================== */
+            /* Reset app session                              */
+            /* ============================================== */
+
+            await driver.reloadSession();
+
+            /* ============================================== */
+            /* Employer accepts application                   */
+            /* ============================================== */
+
+            const employerAcceptApplicationFlow =
+                new EmployerAcceptApplicationFlow(driver);
+
+            await employerAcceptApplicationFlow
+                .acceptLatestApplication();
         }
     );
 });
