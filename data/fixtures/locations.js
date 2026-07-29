@@ -1,9 +1,8 @@
 module.exports = [
-
   'Houston',
   'Dallas',
   'Austin',
-  'Phoenix',
+  'Atlanta',
   'Denver',
   'Miami',
   'Atlanta',

@@ -332,62 +332,145 @@ class CreateJobPage {
     /* Certifications                                            */
     /* ========================================================= */
 
-    /* ========================================================= */
-    /* STEP 6 - Certifications                                  */
-    /* ========================================================= */
-
     async searchCertification(trade) {
         await this.certificationInput.waitForDisplayed({ timeout: 15000 });
         await this.certificationInput.click();
         await this.certificationInput.clearValue();
         await this.certificationInput.setValue(trade);
-        
-        // Wait for results to load
-        await this.driver.pause(1000);
     }
 
     async getAllCertificationOptions() {
-        // Get all visible clickable certification options
-        const allElements = await this.driver.$$(
-            'android=new UiSelector().className("android.view.View").clickable(true)'
+
+        await this.driver.waitUntil(
+
+            async () => {
+
+                const allElements =
+                    await this.driver.$$(
+                        'android=new UiSelector().className("android.view.View").clickable(true)'
+                    );
+
+                const certifications = [];
+
+                for (const element of allElements) {
+
+                    const desc =
+                        await element.getAttribute(
+                            'content-desc'
+                        );
+
+                    if (
+                        desc &&
+                        desc.trim().length > 0 &&
+                        desc !== 'Next Step' &&
+                        desc !== 'Search' &&
+                        desc !== 'Cancel'
+                    ) {
+
+                        certifications.push(desc);
+                    }
+                }
+
+                return certifications.length > 0;
+
+            },
+
+            {
+                timeout: 15000,
+                interval: 300,
+                timeoutMsg: 'Certification options never appeared.'
+            }
         );
-        
-        // Filter to only certification items (content-desc contains certification-related text)
+
+        const allElements =
+            await this.driver.$$(
+                'android=new UiSelector().className("android.view.View").clickable(true)'
+            );
+
         const certifications = [];
+
         for (const element of allElements) {
-            const desc = await element.getAttribute('content-desc');
-            // Only include elements that look like certifications
-            if (desc && desc.length > 0 && !desc.includes('Search') && !desc.includes('Cancel')) {
-                certifications.push(element);
+
+            const desc =
+                await element.getAttribute(
+                    'content-desc'
+                );
+
+            if (
+                desc &&
+                desc.trim().length > 0 &&
+                desc !== 'Next Step' &&
+                desc !== 'Search' &&
+                desc !== 'Cancel'
+            ) {
+
+                certifications.push(desc);
             }
         }
-        
+
         return certifications;
     }
 
-        async selectRandomCertifications() {
-        const certifications = await this.getAllCertificationOptions();
-        const totalAvailable = certifications.length;
-        
-        console.log(`📋 Found ${totalAvailable} certification(s) available`);
-        
+    async selectCertification(certificationName) {
+
+        const certification =
+            this.driver.$(
+                `~${certificationName}`
+            );
+
+        await certification.waitForDisplayed({
+            timeout: 15000
+        });
+
+        await certification.click();
+
+        console.log(
+            `✅ Selected: ${certificationName}`
+        );
+
+        await this.driver.pause(300);
+    }
+
+    async selectRandomCertifications() {
+
+        const certifications =
+            await this.getAllCertificationOptions();
+
+        const totalAvailable =
+            certifications.length;
+
+        console.log(
+            `📋 Found ${totalAvailable} certification(s) available`
+        );
+
         if (totalAvailable === 0) {
-            console.log('⚠️ No certifications found, skipping selection');
-            return;
+
+            throw new Error(
+                'No certification options were found.'
+            );
         }
-        
-        // Determine how many to select (max 2, min 1)
-        const selectCount = Math.min(2, totalAvailable);
-        console.log(`🎯 Selecting ${selectCount} certification(s)`);
-        
-        // Get random indices
-        const indices = this.getRandomIndices(totalAvailable, selectCount);
-        
-        // Select certifications at random indices
+
+        const selectCount =
+            Math.min(
+                2,
+                totalAvailable
+            );
+
+        console.log(
+            `🎯 Selecting ${selectCount} certification(s)`
+        );
+
+        const indices =
+            this.getRandomIndices(
+                totalAvailable,
+                selectCount
+            );
+
         for (const index of indices) {
-            await certifications[index].click();
-            console.log(`✅ Selected certification ${index + 1}`);
-            await this.driver.pause(300);
+
+            await this.selectCertification(
+                certifications[index]
+            );
         }
     }
 
@@ -420,13 +503,28 @@ class CreateJobPage {
     async selectExperienceRange(experience) {
 
         const option =
-            this.driver.$(`~${experience}`);
+            this.driver.$(
+                `~${experience}`
+            );
 
         await option.waitForDisplayed({
             timeout: 15000
         });
 
         await option.click();
+
+        const selectedExperience =
+            this.driver.$(
+                `android=new UiSelector().text("${experience}")`
+            );
+
+        await selectedExperience.waitForDisplayed({
+            timeout: 10000
+        });
+
+        console.log(
+            `✅ Experience selected: ${experience}`
+        );
     }
 
     /* ========================================================= */

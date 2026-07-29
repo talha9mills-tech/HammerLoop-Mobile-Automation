@@ -50,7 +50,7 @@ function createUser(role) {
             `${emailPrefix}.${timestamp}@yopmail.com`,
 
         phone:
-            '5555555555',
+            '5128878584',
 
         password:
             'Abcd@1234'
