@@ -1,7 +1,6 @@
-/*************************************************************
- * Factory: User Factory
- * Purpose: Generate unique HammerLoop test users.
- *************************************************************/
+const {
+    randomUUID
+} = require('crypto');
 
 const {
     names
@@ -35,6 +34,15 @@ function createUser(role) {
             .toLowerCase()
             .replace(/\s+/g, '.');
 
+    // ========================================
+    // Generate Unique Company Name
+    // ========================================
+
+    const uniqueCompanyName =
+        role === 'Employer'
+            ? `${companyName} ${randomUUID().slice(0, 8)}`
+            : null;
+
     return {
 
         role,
@@ -42,18 +50,16 @@ function createUser(role) {
         fullName,
 
         companyName:
-            role === 'Employer'
-                ? companyName
-                : null,
+            uniqueCompanyName,
 
         email:
             `${emailPrefix}.${timestamp}@yopmail.com`,
 
-        phone:
-            '5128878584',
-
-        password:
-            'Abcd@1234'
+        phone: 
+            process.env.DEFAULT_PHONE, 
+        
+        password: 
+            process.env.DEFAULT_PASSWORD
     };
 }
 

@@ -132,7 +132,7 @@ class EmployerAcceptApplicationFlow {
         /* STEP 10 - Pause                                       */
         /* ===================================================== */
 
-        await this.driver.pause(1000);
+        await this.driver.pause(5000);
     }
 }
 
