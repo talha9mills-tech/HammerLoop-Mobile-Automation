@@ -112,7 +112,7 @@ class EmployerRejectApplicationFlow {
 
         await this.employerNotificationsPage
             .verifyApplicant(
-                'Lily Murphy'
+                'Levi Reed'
             );
 
         /* ===================================================== */
@@ -121,7 +121,7 @@ class EmployerRejectApplicationFlow {
 
         await this.employerNotificationsPage
             .tapReject(
-                'Lily Murphy'
+                'Levi Reed'
             );
 
         console.log(

@@ -27,7 +27,7 @@ class EmployerNotificationsPage {
 
         return this.driver.$(
 
-            `android=new UiSelector().descriptionContains("Lily Murphy applied for ${jobTitle}")`
+            `android=new UiSelector().descriptionContains("Levi Reed applied for ${jobTitle}")`
 
         );
     }

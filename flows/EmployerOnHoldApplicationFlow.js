@@ -112,7 +112,7 @@ class EmployerOnHoldApplicationFlow {
 
         await this.employerNotificationsPage
             .verifyApplicant(
-                'Lily Murphy'
+                'Levi Reed'
             );
 
         /* ===================================================== */
@@ -121,7 +121,7 @@ class EmployerOnHoldApplicationFlow {
 
         await this.employerNotificationsPage
             .tapOnHold(
-                'Lily Murphy'
+                'Levi Reed'
             );
 
         console.log(

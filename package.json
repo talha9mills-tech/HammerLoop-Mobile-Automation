@@ -10,7 +10,8 @@
   "test:employer-onboarding": "mocha tests/employer-onboarding.spec.js --timeout 180000",
   "test:create-apply-accept-job": "mocha tests/create-apply-accept-job.spec.js --timeout 600000",
   "test:create-apply-reject-job": "mocha tests/create-apply-reject-job.spec.js --timeout 600000",
-  "test:create-apply-onhold-job": "mocha tests/create-apply-onhold-job.spec.js --timeout 600000"
+  "test:create-apply-onhold-job": "mocha tests/create-apply-onhold-job.spec.js --timeout 600000",
+  "test:employer-password-flow": "mocha tests/employer-password-flow.spec.js --timeout 600000"
 },
   "keywords": [
     "appium",

@@ -101,7 +101,7 @@ class WorkerJobApplicationFlow {
         await this.findJobsPage
             .verifyFirstJobCard(
                 job.title,
-                'Alliance Project Group'
+                'NorthStar Contractors'
             );
 
         /* ===================================================== */
