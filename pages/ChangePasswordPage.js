@@ -212,7 +212,9 @@ class ChangePasswordPage {
 
         await input.clearValue();
 
-        await input.setValue(value);
+        await input.setValue(
+            String(value)
+        );
     }
 }
 
