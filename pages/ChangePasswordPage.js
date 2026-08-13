@@ -52,7 +52,7 @@ class ChangePasswordPage {
 
         this.changePasswordButton =
             driver.$(
-                '~Change Password'
+                'android=new UiSelector().className("android.widget.Button").description("Change Password")'
             );
 
         /* ========================================================= */
@@ -70,7 +70,7 @@ class ChangePasswordPage {
 
         this.firstViewElement =
             driver.$(
-                'android=new UiSelector().className("android.view.View").instance(4)'
+                '//android.widget.FrameLayout[@resource-id="android:id/content"]/android.widget.FrameLayout/android.view.View/android.view.View/android.view.View/android.view.View/android.view.View[1]'
             );
 
         /* ========================================================= */
@@ -163,6 +163,7 @@ class ChangePasswordPage {
         console.log(
             'Password updated successfully.'
         );
+        await this.driver.pause(2000);
     }
 
     /* ========================================================= */
@@ -187,7 +188,7 @@ class ChangePasswordPage {
 
         await this.changeLanguageButton
             .waitForDisplayed({
-                timeout: 15000
+                timeout: 150
             });
 
         console.log(
@@ -216,7 +217,7 @@ class ChangePasswordPage {
             String(value)
         );
     }
-}
+    }
 
 module.exports = {
     ChangePasswordPage
