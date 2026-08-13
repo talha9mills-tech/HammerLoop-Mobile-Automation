@@ -422,42 +422,42 @@ class EmployerPasswordFlow {
 
     async getPasswordResetOtp() {
 
-        console.log(
-            'Retrieving password reset OTP...'
-        );
+    console.log(
+        'Retrieving password reset OTP...'
+    );
 
-        const environmentName =
-            environment.testEnvironment;
+    const environmentName =
+        environment.testEnvironment;
 
-        console.log(
-            `Current test environment: ${environmentName}`
-        );
+    console.log(
+        `Current test environment: ${environmentName}`
+    );
 
-        if (
-            environmentName === 'staging'
-        ) {
-
-            console.log(
-                'Staging environment detected. Retrieving OTP from Yopmail.'
-            );
-
-            return await this.yopmailHelper
-                .getLatestHammerLoopOtp(
-                    environment.employerEmail,
-                    environment.employerEmail
-                );
-        }
+    if (
+        environmentName === 'staging'
+    ) {
 
         console.log(
-            'Production environment detected. Retrieving OTP from employer email.'
+            'Staging environment detected. Retrieving OTP from shared HammerLoop Yopmail inbox.'
         );
 
         return await this.yopmailHelper
             .getLatestHammerLoopOtp(
-                environment.employerEmail,
-                environment.employerEmail
+                'hammerloop@yopmail.com',
+                'hammerloop@yopmail.com'
             );
     }
+
+    console.log(
+        'Production environment detected. Retrieving OTP from employer email.'
+    );
+
+    return await this.yopmailHelper
+        .getLatestHammerLoopOtp(
+            environment.employerEmail,
+            environment.employerEmail
+        );
+}
 }
 
 module.exports = {
