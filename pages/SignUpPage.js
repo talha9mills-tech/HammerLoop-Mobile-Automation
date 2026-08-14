@@ -22,7 +22,9 @@ class SignUpPage {
             );
 
         this.createAccountButton =
-            driver.$('~Create Account');
+            driver.$(
+                'android=new UiSelector().resourceId("create_account_button")'
+            );
     }
 
     /* ========================================================= */
@@ -43,47 +45,43 @@ class SignUpPage {
 
     get fullNameInput() {
 
-        return this.getInput(0);
+        return this.driver.$(
+            'android=new UiSelector().resourceId("full_name_field")'
+        );
     }
 
     get companyNameInput() {
 
-        return this.getInput(1);
+        return this.driver.$(
+            'android=new UiSelector().resourceId("company_name_field")'
+        );
     }
 
     get emailInput() {
 
-        return this.getInput(
-            this.role === 'Employer'
-                ? 2
-                : 1
+        return this.driver.$(
+            'android=new UiSelector().resourceId("email_field")'
         );
     }
 
     get phoneNumberInput() {
 
-        return this.getInput(
-            this.role === 'Employer'
-                ? 3
-                : 2
+        return this.driver.$(
+            'android=new UiSelector().resourceId("phone_number_field")'
         );
     }
 
     get passwordInput() {
 
-        return this.getInput(
-            this.role === 'Employer'
-                ? 4
-                : 3
+        return this.driver.$(
+            'android=new UiSelector().resourceId("password_field")'
         );
     }
 
     get confirmPasswordInput() {
 
-        return this.getInput(
-            this.role === 'Employer'
-                ? 5
-                : 4
+        return this.driver.$(
+            'android=new UiSelector().resourceId("confirm_password_field")'
         );
     }
 
@@ -192,14 +190,49 @@ class SignUpPage {
     /* ========================================================= */
 
     async tapCreateAccount() {
+        // 🔥 FIX: Hide keyboard first
+        try {
+            await this.driver.hideKeyboard();
+            console.log('Keyboard hidden before scrolling.');
+            await this.driver.pause(1000);
+        } catch (e) {
+            console.log('No keyboard to hide.');
+        }
 
+        // 🔥 FIX: Scroll to button using the button's resource ID
         await this.scrollCreateAccountButtonIntoView();
 
+        // 🔥 FIX: Wait for button to be displayed
         await this.createAccountButton.waitForDisplayed({
             timeout: 15000
         });
 
-        await this.createAccountButton.click();
+        // 🔥 FIX: Check if button is enabled
+        const isEnabled = await this.createAccountButton.isEnabled();
+        console.log(`Create Account button enabled: ${isEnabled}`);
+
+        if (!isEnabled) {
+            throw new Error('Create Account button is displayed but disabled.');
+        }
+
+        // 🔥 FIX: Try multiple click methods
+        try {
+            await this.createAccountButton.click();
+            console.log('Create Account button clicked.');
+        } catch (error) {
+            console.log('Standard click failed, trying coordinate tap...');
+            
+            const location = await this.createAccountButton.getLocation();
+            const size = await this.createAccountButton.getSize();
+            
+            const centerX = Math.floor(location.x + (size.width / 2));
+            const centerY = Math.floor(location.y + (size.height / 2));
+            
+            await this.driver.touchAction([
+                { action: 'tap', x: centerX, y: centerY }
+            ]);
+            console.log('Coordinate tap executed.');
+        }
     }
 
     /* ========================================================= */
@@ -287,25 +320,38 @@ class SignUpPage {
     }
 
     async scrollCreateAccountButtonIntoView() {
-
+        // 🔥 FIX: Use UiScrollable with resourceId
         const scrollableSelector =
             'new UiScrollable(' +
             'new UiSelector()' +
-            '.className("android.widget.ScrollView")' +
+            '.scrollable(true)' +
             ')' +
             '.scrollIntoView(' +
             'new UiSelector()' +
-            '.description("Create Account")' +
+            '.resourceId("create_account_button")' +
             ')';
 
-        const button =
-            this.driver.$(
-                `android=${scrollableSelector}`
-            );
-
-        await button.waitForDisplayed({
-            timeout: 15000
-        });
+        try {
+            const button = await this.driver.$(`android=${scrollableSelector}`);
+            await button.waitForDisplayed({ timeout: 10000 });
+            console.log('Scrolled to Create Account button.');
+        } catch (error) {
+            console.log('Scroll failed, trying alternative scroll method...');
+            
+            // 🔥 Alternative: Scroll down manually using touch action
+            const windowSize = await this.driver.getWindowSize();
+            const startX = Math.floor(windowSize.width / 2);
+            const startY = Math.floor(windowSize.height * 0.8);
+            const endY = Math.floor(windowSize.height * 0.2);
+            
+            await this.driver.touchAction([
+                { action: 'press', x: startX, y: startY },
+                { action: 'moveTo', x: startX, y: endY },
+                { action: 'release' }
+            ]);
+            console.log('Manual scroll executed.');
+            await this.driver.pause(1000);
+        }
     }
 }
 
