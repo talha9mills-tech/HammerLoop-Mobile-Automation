@@ -123,16 +123,6 @@ class EmployerOnHoldApplicationFlow {
             .tapOnHold(
                 'Levi Reed'
             );
-
-        console.log(
-            'Application moved to On Hold successfully.'
-        );
-
-        /* ===================================================== */
-        /* STEP 10 - Pause                                       */
-        /* ===================================================== */
-
-        await this.driver.pause(5000);
     }
 }
 

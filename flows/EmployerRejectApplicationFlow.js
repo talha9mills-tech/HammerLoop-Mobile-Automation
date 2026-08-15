@@ -123,16 +123,6 @@ class EmployerRejectApplicationFlow {
             .tapReject(
                 'Levi Reed'
             );
-
-        console.log(
-            'Application rejected successfully.'
-        );
-
-        /* ===================================================== */
-        /* STEP 10 - Pause                                       */
-        /* ===================================================== */
-
-        await this.driver.pause(5000);
     }
 }
 

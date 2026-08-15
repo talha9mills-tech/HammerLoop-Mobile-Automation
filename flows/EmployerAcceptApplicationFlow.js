@@ -123,16 +123,6 @@ class EmployerAcceptApplicationFlow {
             .tapAccept(
                 'Levi Reed'
             );
-
-        console.log(
-            'Application accepted successfully.'
-        );
-
-        /* ===================================================== */
-        /* STEP 10 - Pause                                       */
-        /* ===================================================== */
-
-        await this.driver.pause(5000);
     }
 }
 
