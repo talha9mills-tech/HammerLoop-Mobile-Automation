@@ -1,101 +1,101 @@
 module.exports = [
-  'We are hiring reliable workers for an active construction project. Candidates should arrive on time, follow site safety requirements, and work efficiently as part of the crew to keep the project on schedule.',
+  'Looking to add experienced tradespeople to our crew for this project. Monday to Friday schedule with overtime available on weekends. Must have valid certifications and own hand tools. We provide all PPE and major equipment on site.',
 
-  'Join our construction team on a commercial job site. Applicants should be dependable, safety-conscious, and comfortable working outdoors in a fast-paced environment.',
+  'Need reliable crew members who can commit to the full project duration. Day shifts only. Clean safety record required. Weekly pay with benefits available after 90 days of employment.',
 
-  'We are looking for motivated individuals to support daily construction activities. Responsibilities include following supervisor instructions, maintaining a clean work area, and assisting the crew as needed.',
+  'We need additional skilled workers immediately. OSHA 10 required, OSHA 30 preferred. You will be expected to maintain high standards of cleanliness and professionalism throughout the project. Competitive hourly rate DOE.',
 
-  'Our team is expanding for an upcoming project. Successful candidates will demonstrate a strong work ethic, maintain high safety standards, and contribute to a productive job site.',
+  'We need people who show up every day ready to work. This is not a one-week gig. Looking for tradespeople who want consistent work with a company that treats its people right. Direct hire, not through a staffing agency.',
 
-  'Immediate work is available for dependable construction professionals. Candidates should be prepared to work alongside experienced crews while following all company and site safety procedures.',
+  'Background check required for site access. 10-hour shifts, 4 days per week with optional Friday overtime. Per diem available for workers traveling from outside the area. Minimum 3 years of field experience in your trade.',
 
-  'We need reliable workers who take pride in producing quality work. Applicants should be comfortable working on active construction sites and adapting to changing project needs.',
+  'Aggressive timeline on this one. We need experienced hands who can work independently and keep pace without cutting corners on quality or safety. Night shift positions also available.',
 
-  'This position involves supporting day-to-day site operations while maintaining a safe and organized work environment. Teamwork and punctuality are essential.',
+  'All work must comply with prevailing wage requirements. Certified tradespeople only. Background check and drug screen required. Great opportunity for steady, well-compensated work.',
 
-  'Join a growing contractor working on commercial and industrial projects. Candidates should be committed to quality workmanship, safety, and dependable attendance.',
+  'Work includes both interior and exterior scope. Must be comfortable working at heights and in confined spaces where applicable. Current certifications and training records must be provided at orientation.',
 
-  'Successful applicants will work closely with supervisors and crew members to complete assigned tasks safely, efficiently, and according to project requirements.',
+  'We are a mid-size GC with a reputation for treating crews well and running organized sites. This project will run 6+ months. We offer weekly pay, health benefits, and a $200 tool allowance after probation.',
 
-  'We are seeking hardworking individuals who enjoy working in a team environment. Candidates should be physically capable of performing construction-related duties throughout the workday.',
+  'Short-term intensive project, approximately 2-3 weeks. Premium pay rates. Must complete site-specific safety orientation before starting. Steel-toed boots and FR clothing required. No exceptions on PPE compliance.',
 
-  'This opportunity is ideal for experienced construction workers looking for steady project work. Safety, professionalism, and attention to detail are expected at all times.',
+  'We need tradespeople who can maintain quality at volume. Experience on similar commercial projects is a strong plus. Foreman and lead positions also available for the right candidates.',
 
-  'Candidates should be comfortable working outdoors in varying weather conditions while maintaining productivity and following established safety guidelines.',
+  'Shifts rotate between days and evenings. Full benefits package included. Long-term work guaranteed for reliable performers who maintain good attendance and safety records.',
 
-  'Daily responsibilities include assisting with site activities, handling materials, maintaining housekeeping, and supporting the crew wherever needed.',
+  'Small but fast-growing contractor looking for experienced workers who want to grow with us. We promote from within and value people who take ownership of their craft. Multiple projects running simultaneously.',
 
-  'Applicants should be reliable, safety-focused, and willing to perform a variety of construction tasks while maintaining a positive attitude and strong work ethic.',
+  'Clean, organized site with strict schedule adherence. All workers are required to attend Monday morning safety meetings. Professional appearance and conduct expected given client visibility on this project.',
 
-  'We are hiring for an active project with immediate start dates available. Candidates must follow site rules, wear appropriate PPE, and communicate effectively with supervisors.',
+  'Outdoor work in all weather conditions. Must have experience working near active traffic where applicable. Project duration approximately 5 months with potential for follow-on work.',
 
-  'Join a professional construction team committed to delivering quality projects safely and on schedule. Dependability and teamwork are key to success in this role.',
+  'Extremely high finish standards on this project. If you take pride in precision work and can deliver quality under tight timelines, this is your job. Premium rates for premium craftsmanship. References will be checked.',
 
-  'The successful candidate will contribute to daily site operations by completing assigned work efficiently while maintaining high standards of safety and workmanship.',
+  'Site is about 40 minutes outside the city. Transportation assistance available for qualified candidates. Physical stamina required. Bring water and lunch as there are no nearby services.',
 
-  'This position offers long-term project opportunities for individuals who value safety, reliability, and quality construction practices.',
+  'We run a tight ship and our safety record reflects it. Zero incidents in 18 months. Looking for like-minded professionals who take safety as seriously as we do.',
 
-  'We are looking for team members who can work independently when needed while also supporting fellow crew members to achieve daily project goals.',
+  'This is a high-profile project with potential media visibility. Expect inspections, walkthroughs, and a well-documented QA process. Attention to detail separates good candidates from great ones.',
 
-  'Applicants should be capable of performing physically demanding work, following site instructions, and maintaining a clean and organized work area.',
+  'Family-owned contractor in business for 30 years. We do not burn through people. If you are tired of being treated like a number, come work with a team that values loyalty and craftsmanship.',
 
-  'Our projects require dependable workers who understand the importance of punctuality, safety compliance, and consistent quality throughout every shift.',
+  '12-hour shifts, 7 days on / 7 days off rotation. Excellent pay plus per diem and travel reimbursement. Must pass drug test. Safety orientation is two full days before site access is granted.',
 
-  'Successful candidates will assist with construction activities while ensuring all work is completed according to project specifications and company standards.',
+  'Opportunity to move between scopes as phases complete. Looking for versatile workers who can adapt and are not afraid to learn adjacent skills. We cross-train our people.',
 
-  'This role requires individuals who are committed to maintaining a safe work environment while delivering quality results and supporting project schedules.',
+  'Minimum 2 years in commercial construction required. Apprentices with strong references will also be considered. We believe in developing talent, not just hiring it.',
 
-  'Join an experienced construction crew where safety, teamwork, and professionalism are valued every day on the job site.',
+  'Prevailing wages apply. Certified payroll and strict documentation required. In return you get above-market pay, consistent hours, and a well-managed job site.',
 
-  'We are seeking reliable construction professionals who can adapt to changing site conditions while maintaining productivity and quality workmanship.',
+  'Firm deadline on this one and we are behind schedule. Willing to pay premium rates for experienced workers who can start this week. 50-hour weeks guaranteed through project completion.',
 
-  'Candidates should be comfortable following daily work plans, communicating with supervisors, and assisting wherever additional support is required.',
+  'Massive footprint, fast timeline, well-funded project. Site superintendent runs an organized operation. You will never be standing around waiting for direction or materials on this site.',
 
-  'This opportunity offers consistent work on active construction projects with a team that values accountability, collaboration, and safe work practices.',
+  'This is not a demolition-speed job. We need patient, detail-oriented tradespeople who understand that some things cannot be rushed. Unique and rewarding work for the right person.',
 
-  'Applicants should demonstrate a strong commitment to workplace safety, proper use of equipment, and maintaining a productive job site.',
+  'Must be comfortable with heights and have experience on vertical construction. Punctuality directly impacts the entire crew so do not apply if you cannot commit to start times.',
 
-  'We are hiring dependable workers who can support construction operations while maintaining high standards of attendance, professionalism, and teamwork.',
+  'Fun project with an owner who is hands-on and collaborative. Looking for experienced tradespeople who communicate well and can problem-solve on the fly. Creative approaches welcome.',
 
-  'The ideal candidate is motivated, safety-oriented, and willing to contribute wherever needed to help keep projects moving forward efficiently.',
+  'Work is primarily in mechanical rooms and below-grade areas. Not glamorous but the pay reflects the conditions. Reliable performers get first pick on our future projects.',
 
-  'This position involves working alongside experienced construction crews to complete project tasks safely, efficiently, and on schedule.',
+  'Project is well-funded with realistic timelines. No weekend work unless you want it. We believe rested crews produce better work and our quality reflects that philosophy.',
 
-  'Candidates should be prepared to attend safety meetings, follow supervisor direction, and perform assigned work with attention to detail.',
+  'Work is limited to evenings and weekends to minimize disruption to building occupants. Premium shift differential applies. Must be able to work quietly and clean up completely each shift.',
 
-  'We are looking for individuals who value quality workmanship, reliable attendance, and a strong commitment to maintaining safe job site practices.',
+  'This is a publicly funded project so all labor compliance rules apply. Great working conditions, reasonable pace, and the satisfaction of building something that matters for the community.',
 
-  'Successful applicants will help maintain project schedules by completing assigned work efficiently while supporting a safe and organized work environment.',
+  'Consistent 40-hour weeks with overtime rarely required. Good work-life balance for those who want steady income without burning out. Benefits kick in after 60 days.',
 
-  'Join our team and contribute to commercial construction projects where teamwork, communication, and professionalism are essential to success.',
+  'Housing assistance available for out-of-town workers. Project runs approximately 8 months. Looking for self-sufficient professionals who do not need hand-holding on daily tasks.',
 
-  'We are seeking hardworking individuals who are ready to support daily construction operations while maintaining company safety and quality expectations.',
+  'Experience in similar environments goes to the front of the line but we will train the right person. Must be willing to follow site-specific protocols that go beyond standard construction requirements.',
 
-  'Applicants should be flexible and willing to assist with different site activities as project requirements change throughout the construction process.',
+  'Professional conduct is mandatory on this one. Bilingual candidates appreciated. Long-term program with multiple phases planned, so this could turn into years of steady work.',
 
-  'This role offers the opportunity to work on exciting construction projects with a company that values safety, integrity, and dependable performance.',
+  'Easy parking, nearby lunch options, and a foreman who plans ahead so you are never standing around waiting for materials. We respect your time on and off the clock.',
 
-  'The successful candidate will contribute to project success by maintaining productivity, following safety procedures, and supporting fellow crew members.',
+  'Challenging work with surprises around every corner. Need experienced tradespeople who do not panic when things do not go exactly according to plan. Adaptability is key.',
 
-  'We are looking for dependable construction workers who are committed to delivering quality results while helping maintain a safe and efficient work environment.',
+  'Design-build delivery so scope evolves as the project progresses. Must be comfortable with change and able to communicate effectively when field conditions differ from drawings.',
 
-  'Candidates should have a positive attitude, strong work ethic, and the ability to work effectively as part of a professional construction team.',
+  'Full background investigation required which takes 2-3 weeks to process. Once cleared, expect 12+ months of steady work. If you can handle the protocols, the pay and stability are excellent.',
 
-  'This position requires individuals who are reliable, safety-conscious, and committed to completing assigned work while meeting project deadlines.',
+  'Noise restrictions apply during certain hours. Dust containment and coordination with other occupants are part of the daily workflow. Experience on occupied-space projects strongly preferred.',
 
-  'Join an active construction site where your dedication, teamwork, and commitment to quality will help ensure successful project completion.',
+  'Looking to build a crew that can move from site to site over the next 6 months. Mileage reimbursement provided. Each phase is approximately 6-8 weeks before rotating to the next location.',
 
-  'We are seeking professionals who understand the importance of safety, communication, and dependable performance on every construction project.',
+  'This is precision work in a controlled environment. Hard hats and safety glasses required but expect to keep your area clean. Unique experience that looks great on a resume.',
 
-  'Successful applicants will support construction operations by following site procedures, maintaining clean work areas, and assisting wherever needed.',
+  'Repetitive but steady work with clear daily targets. Great for people who like knowing exactly what is expected each day. No ambiguity, no drama, just solid consistent production.',
 
-  'This is an excellent opportunity to join a growing construction team working on commercial and industrial projects with a strong focus on safety and quality.',
+  'Culture matters to us. Toxic attitudes are not welcome regardless of skill level. If you are good at what you do AND good to work with, we want to hear from you.',
 
-  'Candidates should be ready to work in a physically active environment while maintaining professionalism, productivity, and respect for fellow crew members.',
+  'Timeline is urgent and conditions may be rough. Hazard pay applies for certain tasks. Must be available to start within 48 hours of receiving an offer.',
 
-  'We value employees who consistently demonstrate reliability, accountability, and a commitment to safe and efficient construction practices.',
+  'Specific ventilation, electrical, and security requirements on this project. Attention to detail and ability to follow specialized installation procedures are essential.',
 
-  'Our team is looking for dependable workers who can contribute to successful project completion through teamwork, attention to detail, and quality workmanship.',
+  'If you have been bouncing between staffing agencies and want something permanent, we get it. We hire direct and keep good people busy year-round. More projects already in the pipeline.',
 
-  'If you are a motivated construction professional looking for steady work in a safe and supportive environment, we encourage you to apply today.'
+  'Straightforward scope with a well-organized site team. We plan properly so our crews can focus on execution instead of chasing information. Apply if you want to work for people who have their act together.'
 ];

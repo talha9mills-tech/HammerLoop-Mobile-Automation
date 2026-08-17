@@ -21,10 +21,11 @@ class SignUpPage {
                 'android=new UiSelector().className("android.widget.CheckBox").instance(1)'
             );
 
-        this.createAccountButton =
-            driver.$(
-                'android=new UiSelector().resourceId("create_account_button")'
-            );
+        // NOTE: no longer cached here — see getCreateAccountButton().
+        // A cached handle can point at stale coordinates after the
+        // keyboard-hide / scroll animations shift the layout, which was
+        // causing clicks to land on the wrong widget (e.g. the back
+        // button) instead of this one.
     }
 
     /* ========================================================= */
@@ -82,6 +83,20 @@ class SignUpPage {
 
         return this.driver.$(
             'android=new UiSelector().resourceId("confirm_password_field")'
+        );
+    }
+
+    /**
+     * Deliberately a fresh lookup on every call, not a cached property.
+     * The button can be disposed/recreated by Flutter during the
+     * keyboard-hide and scroll animations that happen right before we
+     * click it — a stale handle keeps its OLD bounds, which is what
+     * caused the click to land off-target and trigger back navigation.
+     */
+    getCreateAccountButton() {
+
+        return this.driver.$(
+            'android=new UiSelector().resourceId("create_account_button")'
         );
     }
 
@@ -190,49 +205,39 @@ class SignUpPage {
     /* ========================================================= */
 
     async tapCreateAccount() {
-        // 🔥 FIX: Hide keyboard first
+
         try {
             await this.driver.hideKeyboard();
             console.log('Keyboard hidden before scrolling.');
-            await this.driver.pause(1000);
-        } catch (e) {
+        } catch {
             console.log('No keyboard to hide.');
         }
 
-        // 🔥 FIX: Scroll to button using the button's resource ID
+        // Let the keyboard-close animation fully settle before touching
+        // the layout again.
+        await this.driver.pause(800);
+
         await this.scrollCreateAccountButtonIntoView();
 
-        // 🔥 FIX: Wait for button to be displayed
-        await this.createAccountButton.waitForDisplayed({
-            timeout: 15000
-        });
+        // Let the scroll animation fully settle before locating/clicking
+        // the button — clicking mid-animation is what was landing on a
+        // stale position.
+        await this.driver.pause(500);
 
-        // 🔥 FIX: Check if button is enabled
-        const isEnabled = await this.createAccountButton.isEnabled();
+        // Fresh lookup — see getCreateAccountButton() comment.
+        const button = this.getCreateAccountButton();
+
+        await button.waitForDisplayed({ timeout: 15000 });
+
+        const isEnabled = await button.isEnabled();
         console.log(`Create Account button enabled: ${isEnabled}`);
 
         if (!isEnabled) {
             throw new Error('Create Account button is displayed but disabled.');
         }
 
-        // 🔥 FIX: Try multiple click methods
-        try {
-            await this.createAccountButton.click();
-            console.log('Create Account button clicked.');
-        } catch (error) {
-            console.log('Standard click failed, trying coordinate tap...');
-            
-            const location = await this.createAccountButton.getLocation();
-            const size = await this.createAccountButton.getSize();
-            
-            const centerX = Math.floor(location.x + (size.width / 2));
-            const centerY = Math.floor(location.y + (size.height / 2));
-            
-            await this.driver.touchAction([
-                { action: 'tap', x: centerX, y: centerY }
-            ]);
-            console.log('Coordinate tap executed.');
-        }
+        await button.click();
+        console.log('Create Account button clicked.');
     }
 
     /* ========================================================= */
@@ -319,38 +324,50 @@ class SignUpPage {
         });
     }
 
+    /**
+     * Uses Appium's "mobile: scrollGesture" instead of
+     * UiScrollable(scrollable(true)) — Flutter apps don't expose a
+     * native "scrollable" attribute on their semantics tree, so that
+     * selector never matched anything and this method was silently
+     * falling through to a large manual swipe (80% -> 20% of screen
+     * height) on every single call, which was likely overshooting past
+     * the button.
+     *
+     * mobile: scrollGesture works purely off screen coordinates, so it
+     * doesn't depend on that attribute at all.
+     */
     async scrollCreateAccountButtonIntoView() {
-        // 🔥 FIX: Use UiScrollable with resourceId
-        const scrollableSelector =
-            'new UiScrollable(' +
-            'new UiSelector()' +
-            '.scrollable(true)' +
-            ')' +
-            '.scrollIntoView(' +
-            'new UiSelector()' +
-            '.resourceId("create_account_button")' +
-            ')';
+
+        const windowSize = await this.driver.getWindowSize();
 
         try {
-            const button = await this.driver.$(`android=${scrollableSelector}`);
-            await button.waitForDisplayed({ timeout: 10000 });
-            console.log('Scrolled to Create Account button.');
+
+            await this.driver.execute('mobile: scrollGesture', {
+                left: 0,
+                top: Math.floor(windowSize.height * 0.2),
+                width: windowSize.width,
+                height: Math.floor(windowSize.height * 0.6),
+                direction: 'down',
+                percent: 0.75
+            });
+
+            console.log('Scrolled toward Create Account button.');
+
         } catch (error) {
-            console.log('Scroll failed, trying alternative scroll method...');
-            
-            // 🔥 Alternative: Scroll down manually using touch action
-            const windowSize = await this.driver.getWindowSize();
+
+            console.log(`mobile: scrollGesture failed (${error.message}), trying manual swipe...`);
+
             const startX = Math.floor(windowSize.width / 2);
-            const startY = Math.floor(windowSize.height * 0.8);
-            const endY = Math.floor(windowSize.height * 0.2);
-            
+            const startY = Math.floor(windowSize.height * 0.75);
+            const endY = Math.floor(windowSize.height * 0.35);
+
             await this.driver.touchAction([
                 { action: 'press', x: startX, y: startY },
                 { action: 'moveTo', x: startX, y: endY },
                 { action: 'release' }
             ]);
+
             console.log('Manual scroll executed.');
-            await this.driver.pause(1000);
         }
     }
 }
