@@ -1,8 +1,8 @@
 /*************************************************************
- * Flow: Employer Worker Recommendation Flow
+ * Flow: Employer Worker Chat Flow
  * Purpose: Login as employer, find a worker, hire the
- *          worker, recommend the worker, and remove the
- *          recommendation.
+ *          worker, open the chat, send a unique message,
+ *          and verify that the message was sent successfully.
  *************************************************************/
 
 const {
@@ -17,7 +17,12 @@ const {
     FindWorkerPage
 } = require('../pages/FindWorkerPage');
 
-class EmployerWorkerRecommendationFlow {
+const {
+    ChatPage
+} = require('../pages/ChatPage');
+
+
+class EmployerWorkerChatFlow {
 
     constructor(driver) {
 
@@ -31,17 +36,22 @@ class EmployerWorkerRecommendationFlow {
 
         this.findWorkerPage =
             new FindWorkerPage(driver);
+
+        this.chatPage =
+            new ChatPage(driver);
     }
 
+
     /* ========================================================= */
-    /* Complete Employer Worker Recommendation Flow              */
+    /* Complete Employer Worker Chat Flow                        */
     /* ========================================================= */
 
-    async recommendAndRemoveWorker() {
+    async sendEmployerChatMessage() {
 
         console.log(
-            'Starting employer worker recommendation flow...'
+            'Starting employer worker chat flow...'
         );
+
 
         /* ========================================================= */
         /* Worker To Search For                                      */
@@ -49,6 +59,22 @@ class EmployerWorkerRecommendationFlow {
 
         const workerName =
             'Levi Reed';
+
+
+        /* ========================================================= */
+        /* Generate Unique Employer Message                          */
+        /* ========================================================= */
+
+        const messageTimestamp =
+            Date.now();
+
+        const employerMessage =
+            `Hi ${workerName} ${messageTimestamp}-1`;
+
+        console.log(
+            `Employer message: ${employerMessage}`
+        );
+
 
         /* ========================================================= */
         /* Get Started                                               */
@@ -61,6 +87,7 @@ class EmployerWorkerRecommendationFlow {
         await this.welcomePage
             .tapGetStarted();
 
+
         /* ========================================================= */
         /* Login as Employer                                         */
         /* ========================================================= */
@@ -71,6 +98,7 @@ class EmployerWorkerRecommendationFlow {
 
         await this.loginFlow
             .loginEmployer();
+
 
         /* ========================================================= */
         /* Search Worker                                             */
@@ -85,54 +113,86 @@ class EmployerWorkerRecommendationFlow {
                 workerName
             );
 
+
         /* ========================================================= */
-        /* Verify Worker Card and Hire Worker                       */
+        /* Verify Worker Card                                        */
+        /* ========================================================= */
+
+        await this.findWorkerPage
+            .verifyWorkerCard(
+                workerName
+            );
+
+
+        /* ========================================================= */
+        /* Hire Worker                                               */
         /* ========================================================= */
 
         console.log(
             `Hiring ${workerName}...`
         );
 
-        // This will now wait for the specific worker card and click its Hire Me button
         await this.findWorkerPage
-            .tapHireMeForWorker(workerName);
+            .tapHireMeForWorker(
+                workerName
+            );
+
 
         /* ========================================================= */
-        /* Submit Recommendation                                      */
+        /* Open Worker Chat                                          */
         /* ========================================================= */
 
         console.log(
-            'Submitting worker recommendation...'
+            'Opening worker chat...'
         );
 
         await this.findWorkerPage
-            .tapRecommend();
+            .tapMessageMe();
 
-        await this.findWorkerPage
-            .verifyRecommendationSubmitted();
-
-        await this.driver.pause(1000);
 
         /* ========================================================= */
-        /* Remove Recommendation                                      */
+        /* Send Employer Message                                     */
         /* ========================================================= */
 
         console.log(
-            'Removing worker recommendation...'
+            `Sending employer message: "${employerMessage}"`
         );
 
-        await this.findWorkerPage
-            .tapRecommend();
+        await this.chatPage
+            .sendMessage(
+                employerMessage
+            );
 
-        await this.findWorkerPage
-            .verifyRecommendationRemoved();
+
+        /* ========================================================= */
+        /* Verify Sent Message                                       */
+        /* ========================================================= */
 
         console.log(
-            'Employer worker recommendation flow completed successfully.'
+            `Verifying sent message: "${employerMessage}"`
+        );
+
+        await this.chatPage
+            .verifyMessage(
+                employerMessage
+            );
+
+
+        /* ========================================================= */
+        /* Flow Completed                                            */
+        /* ========================================================= */
+
+        console.log(
+            'Employer message was sent and verified successfully.'
+        );
+
+        console.log(
+            'Employer worker chat flow completed.'
         );
     }
 }
 
+
 module.exports = {
-    EmployerWorkerRecommendationFlow
+    EmployerWorkerChatFlow
 };

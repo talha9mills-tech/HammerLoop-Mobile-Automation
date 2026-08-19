@@ -1,7 +1,8 @@
 /*************************************************************
  * Page Object: Find Worker Page
- * Purpose: Handle searching workers and managing
- *          worker recommendations.
+ * Purpose: Handle worker search, worker selection,
+ *          hiring, recommendations, and worker profile
+ *          actions.
  *************************************************************/
 
 class FindWorkerPage {
@@ -17,24 +18,6 @@ class FindWorkerPage {
         this.inputField =
             driver.$(
                 'android=new UiSelector().className("android.widget.EditText")'
-            );
-
-        /* ========================================================= */
-        /* Worker Card                                                 */
-        /* ========================================================= */
-
-        this.workerCard =
-            driver.$(
-                'android=new UiSelector().descriptionContains("Worker")'
-            );
-
-        /* ========================================================= */
-        /* Hire Me Button                                              */
-        /* ========================================================= */
-
-        this.hireMeButton =
-            driver.$(
-                'android=new UiSelector().description("Hire Me").instance(0)'
             );
 
         /* ========================================================= */
@@ -63,6 +46,15 @@ class FindWorkerPage {
             driver.$(
                 '~Recommendation Removed'
             );
+
+        /* ========================================================= */
+        /* Message Me / Chat Button                                    */
+        /* ========================================================= */
+
+        this.messageMeButton =
+            driver.$(
+                'android=new UiSelector().resourceId("chat_button")'
+            );
     }
 
     /* ========================================================= */
@@ -71,9 +63,10 @@ class FindWorkerPage {
 
     async searchWorker(workerName) {
 
-        await this.inputField.waitForDisplayed({
-            timeout: 15000
-        });
+        await this.inputField
+            .waitForDisplayed({
+                timeout: 15000
+            });
 
         await this.inputField.click();
 
@@ -81,6 +74,39 @@ class FindWorkerPage {
 
         await this.inputField.setValue(
             workerName
+        );
+
+        // Add a small delay to let search results populate
+        await this.driver.pause(2000);
+
+        console.log(
+            `Searching for worker: ${workerName}`
+        );
+    }
+
+    /* ========================================================= */
+    /* Get Worker Card                                            */
+    /* ========================================================= */
+
+    getWorkerCard(workerName) {
+
+        return this.driver.$(
+            `android=new UiSelector().descriptionContains("${workerName}")`
+        );
+    }
+
+    /* ========================================================= */
+    /* Get Hire Me Button for Specific Worker                     */
+    /* ========================================================= */
+
+    getHireMeButtonForWorker(workerName) {
+        // First find the worker card
+        const workerCard = this.getWorkerCard(workerName);
+        
+        // Then find the Hire Me button within that card
+        // Assuming the Hire Me button is a child element of the worker card
+        return workerCard.$(
+            'android=new UiSelector().description("Hire Me")'
         );
     }
 
@@ -91,13 +117,12 @@ class FindWorkerPage {
     async verifyWorkerCard(workerName) {
 
         const workerCard =
-            this.driver.$(
-                `android=new UiSelector().descriptionContains("${workerName}")`
-            );
+            this.getWorkerCard(workerName);
 
-        await workerCard.waitForDisplayed({
-            timeout: 15000
-        });
+        await workerCard
+            .waitForDisplayed({
+                timeout: 15000
+            });
 
         console.log(
             `${workerName} worker card is visible.`
@@ -105,20 +130,64 @@ class FindWorkerPage {
     }
 
     /* ========================================================= */
-    /* Tap Hire Me                                                */
+    /* Select Worker Card                                         */
     /* ========================================================= */
 
-    async tapHireMe() {
+    async selectWorker(workerName) {
 
-        await this.hireMeButton
+        const workerCard =
+            this.getWorkerCard(workerName);
+
+        await workerCard
             .waitForDisplayed({
                 timeout: 15000
             });
 
-        await this.hireMeButton.click();
+        await workerCard.click();
 
         console.log(
-            'Hire Me button clicked.'
+            `${workerName} worker card selected.`
+        );
+    }
+
+    /* ========================================================= */
+    /* Tap Hire Me for Specific Worker                           */
+    /* ========================================================= */
+
+    async tapHireMeForWorker(workerName) {
+        // Wait for the worker card to be displayed first
+        await this.verifyWorkerCard(workerName);
+        
+        // Get the specific Hire Me button for this worker
+        const hireMeButton = this.getHireMeButtonForWorker(workerName);
+        
+        // Wait for the button to be displayed and clickable
+        await hireMeButton.waitForDisplayed({
+            timeout: 10000
+        });
+        
+        await hireMeButton.click();
+
+        console.log(
+            `Hire Me button clicked for ${workerName}.`
+        );
+    }
+
+    /* ========================================================= */
+    /* Tap Message Me                                            */
+    /* ========================================================= */
+
+    async tapMessageMe() {
+
+        await this.messageMeButton
+            .waitForDisplayed({
+                timeout: 15000
+            });
+
+        await this.messageMeButton.click();
+
+        console.log(
+            'Message Me button clicked.'
         );
     }
 

@@ -67,7 +67,7 @@ describe(
         /* ========================================================= */
 
         it(
-            'should recommend and remove recommendation for Chloe Nelson',
+            'should recommend and remove recommendation',
 
             async function () {
 
