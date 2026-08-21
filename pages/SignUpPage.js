@@ -11,21 +11,9 @@ class SignUpPage {
 
         this.role = 'Worker';
 
-        this.termsAndConditionsCheckbox =
-            driver.$(
-                'android=new UiSelector().className("android.widget.CheckBox").instance(0)'
-            );
-
-        this.privacyPolicyCheckbox =
-            driver.$(
-                'android=new UiSelector().className("android.widget.CheckBox").instance(1)'
-            );
-
-        // NOTE: no longer cached here — see getCreateAccountButton().
-        // A cached handle can point at stale coordinates after the
-        // keyboard-hide / scroll animations shift the layout, which was
-        // causing clicks to land on the wrong widget (e.g. the back
-        // button) instead of this one.
+        // NOTE: No longer caching checkbox elements here!
+        // Cached elements can become stale when Flutter rebuilds widgets.
+        // We'll use getter methods for fresh lookups instead.
     }
 
     /* ========================================================= */
@@ -89,14 +77,31 @@ class SignUpPage {
     /**
      * Deliberately a fresh lookup on every call, not a cached property.
      * The button can be disposed/recreated by Flutter during the
-     * keyboard-hide and scroll animations that happen right before we
-     * click it — a stale handle keeps its OLD bounds, which is what
-     * caused the click to land off-target and trigger back navigation.
+     * keyboard-hide animation that happens right before we click it —
+     * a stale handle keeps its OLD bounds.
      */
     getCreateAccountButton() {
 
         return this.driver.$(
             'android=new UiSelector().resourceId("create_account_button")'
+        );
+    }
+
+    /* ========================================================= */
+    /* Checkbox Getters - Fresh Lookups Each Time               */
+    /* ========================================================= */
+
+    getTermsCheckbox() {
+
+        return this.driver.$(
+            'android=new UiSelector().resourceId("terms_checkbox")'
+        );
+    }
+
+    getSmsConsentCheckbox() {
+
+        return this.driver.$(
+            'android=new UiSelector().resourceId("sms_consent_checkbox")'
         );
     }
 
@@ -176,59 +181,96 @@ class SignUpPage {
     /* Terms                                                     */
     /* ========================================================= */
 
-    async acceptTermsAndConditions() {
+    async acceptTerms() {
 
-        await this.scrollCheckboxIntoView(0);
-
-        await this.clickCheckbox(
-            this.termsAndConditionsCheckbox,
-            'Terms and Conditions'
-        );
+        console.log('Accepting Terms...');
+        
+        // Get fresh checkbox
+        const checkbox = this.getTermsCheckbox();
+        
+        // Check if already displayed
+        if (await checkbox.isDisplayed()) {
+            console.log('Terms checkbox is already displayed!');
+            await this.clickCheckboxWithDebug(checkbox, 'Terms');
+            return;
+        }
+        
+        // If not displayed, scroll and click
+        const scrolledCheckbox = await this.scrollCheckboxIntoView('terms_checkbox');
+        await this.clickCheckboxWithDebug(scrolledCheckbox, 'Terms');
     }
 
     /* ========================================================= */
-    /* Privacy                                                   */
+    /* SMS Consent                                               */
     /* ========================================================= */
 
-    async acceptPrivacyPolicy() {
+    async acceptSmsConsent() {
 
-        await this.scrollCheckboxIntoView(1);
-
-        await this.clickCheckbox(
-            this.privacyPolicyCheckbox,
-            'Privacy Policy'
-        );
+        console.log('Accepting SMS Consent...');
+        
+        // Get fresh checkbox
+        const checkbox = this.getSmsConsentCheckbox();
+        
+        // Check if already displayed
+        if (await checkbox.isDisplayed()) {
+            console.log('SMS Consent checkbox is already displayed!');
+            await this.clickCheckboxWithDebug(checkbox, 'SMS Consent');
+            return;
+        }
+        
+        // If not displayed, scroll and click
+        const scrolledCheckbox = await this.scrollCheckboxIntoView('sms_consent_checkbox');
+        await this.clickCheckboxWithDebug(scrolledCheckbox, 'SMS Consent');
     }
 
     /* ========================================================= */
-    /* Create Account                                            */
+    /* Create Account - FIXED: No keyboard hide!                */
     /* ========================================================= */
 
     async tapCreateAccount() {
 
-        try {
-            await this.driver.hideKeyboard();
-            console.log('Keyboard hidden before scrolling.');
-        } catch {
-            console.log('No keyboard to hide.');
-        }
+        console.log('Attempting to click Create Account button...');
 
-        // Let the keyboard-close animation fully settle before touching
-        // the layout again.
-        await this.driver.pause(800);
+        // IMPORTANT FIX: Do NOT hide keyboard here!
+        // The keyboard hide action is causing navigation away from the form.
+        // The keyboard should already be hidden after filling the last field.
+        // If keyboard is still showing, the user can tap the button which will
+        // automatically dismiss the keyboard and submit the form.
 
-        await this.scrollCreateAccountButtonIntoView();
-
-        // Let the scroll animation fully settle before locating/clicking
-        // the button — clicking mid-animation is what was landing on a
-        // stale position.
-        await this.driver.pause(500);
-
-        // Fresh lookup — see getCreateAccountButton() comment.
+        // Get fresh button
         const button = this.getCreateAccountButton();
 
-        await button.waitForDisplayed({ timeout: 15000 });
+        // Wait for button with retry
+        let found = false;
+        for (let attempt = 0; attempt < 5; attempt++) {
+            try {
+                await button.waitForDisplayed({
+                    timeout: 3000,
+                    interval: 500
+                });
+                found = true;
+                console.log(`Create Account button found on attempt ${attempt + 1}`);
+                break;
+            } catch (error) {
+                console.log(`Create Account button not found, attempt ${attempt + 1}/5`);
+                await this.driver.pause(500);
+            }
+        }
 
+        if (!found) {
+            // Check if we're still on the signup screen
+            const isSignupScreen = await this.driver.$(
+                'android=new UiSelector().textContains("Create Account")'
+            ).isDisplayed();
+            
+            if (!isSignupScreen) {
+                throw new Error('Navigated away from signup screen before clicking Create Account');
+            }
+            
+            throw new Error('Create Account button not found after multiple attempts');
+        }
+
+        // Check if button is enabled
         const isEnabled = await button.isEnabled();
         console.log(`Create Account button enabled: ${isEnabled}`);
 
@@ -236,8 +278,9 @@ class SignUpPage {
             throw new Error('Create Account button is displayed but disabled.');
         }
 
+        // Click the button
         await button.click();
-        console.log('Create Account button clicked.');
+        console.log('Create Account button clicked successfully.');
     }
 
     /* ========================================================= */
@@ -287,25 +330,67 @@ class SignUpPage {
         await input.setValue(String(value));
     }
 
-    async clickCheckbox(checkbox, checkboxName) {
+    /* ========================================================= */
+    /* Click Checkbox with Debug                                 */
+    /* ========================================================= */
 
+    async clickCheckboxWithDebug(checkbox, checkboxName) {
+
+        console.log(`Attempting to click ${checkboxName} checkbox...`);
+
+        // Wait for it to be displayed
         await checkbox.waitForDisplayed({
             timeout: 15000
         });
 
-        await checkbox.click();
+        // Get state before click
+        const beforeChecked = await checkbox.getAttribute('checked');
+        console.log(`${checkboxName} checked state BEFORE click: ${beforeChecked}`);
 
-        console.log(
-            `${checkboxName} checkbox clicked.`
-        );
+        // Perform click
+        await checkbox.click();
+        console.log(`${checkboxName} checkbox clicked.`);
+
+        // Wait a moment for state to update
+        await this.driver.pause(500);
+
+        // Get state after click
+        const afterChecked = await checkbox.getAttribute('checked');
+        console.log(`${checkboxName} checked state AFTER click: ${afterChecked}`);
+
+        if (beforeChecked === afterChecked) {
+            console.warn(`WARNING: ${checkboxName} checkbox state did NOT change!`);
+            console.warn(`Before: ${beforeChecked}, After: ${afterChecked}`);
+            
+            // Try alternative click method - click by coordinates
+            console.log(`Attempting alternative click by coordinates for ${checkboxName}...`);
+            const location = await checkbox.getLocation();
+            const size = await checkbox.getSize();
+            const x = location.x + (size.width / 2);
+            const y = location.y + (size.height / 2);
+            
+            await this.driver.touchAction({
+                action: 'tap',
+                x: x,
+                y: y
+            });
+            
+            await this.driver.pause(500);
+            const afterCoordClick = await checkbox.getAttribute('checked');
+            console.log(`${checkboxName} checked state AFTER coordinate click: ${afterCoordClick}`);
+        }
     }
 
-    async scrollCheckboxIntoView(instanceNumber) {
+    /* ========================================================= */
+    /* Scroll Checkbox Into View                                 */
+    /* ========================================================= */
+
+    async scrollCheckboxIntoView(resourceId) {
+
+        console.log(`Scrolling to checkbox with resourceId: ${resourceId}`);
 
         const checkboxSelector =
-            'new UiSelector()' +
-            '.className("android.widget.CheckBox")' +
-            `.instance(${instanceNumber})`;
+            `new UiSelector().resourceId("${resourceId}")`;
 
         const scrollableSelector =
             'new UiScrollable(' +
@@ -322,53 +407,24 @@ class SignUpPage {
         await checkbox.waitForDisplayed({
             timeout: 15000
         });
+
+        console.log(`Successfully scrolled to checkbox: ${resourceId}`);
+        
+        return checkbox;
     }
 
-    /**
-     * Uses Appium's "mobile: scrollGesture" instead of
-     * UiScrollable(scrollable(true)) — Flutter apps don't expose a
-     * native "scrollable" attribute on their semantics tree, so that
-     * selector never matched anything and this method was silently
-     * falling through to a large manual swipe (80% -> 20% of screen
-     * height) on every single call, which was likely overshooting past
-     * the button.
-     *
-     * mobile: scrollGesture works purely off screen coordinates, so it
-     * doesn't depend on that attribute at all.
-     */
-    async scrollCreateAccountButtonIntoView() {
+    /* ========================================================= */
+    /* Backward Compatibility - Deprecated Methods              */
+    /* ========================================================= */
 
-        const windowSize = await this.driver.getWindowSize();
+    async acceptTermsAndConditions() {
+        console.warn('acceptTermsAndConditions() is deprecated. Use acceptTerms() instead.');
+        await this.acceptTerms();
+    }
 
-        try {
-
-            await this.driver.execute('mobile: scrollGesture', {
-                left: 0,
-                top: Math.floor(windowSize.height * 0.2),
-                width: windowSize.width,
-                height: Math.floor(windowSize.height * 0.6),
-                direction: 'down',
-                percent: 0.75
-            });
-
-            console.log('Scrolled toward Create Account button.');
-
-        } catch (error) {
-
-            console.log(`mobile: scrollGesture failed (${error.message}), trying manual swipe...`);
-
-            const startX = Math.floor(windowSize.width / 2);
-            const startY = Math.floor(windowSize.height * 0.75);
-            const endY = Math.floor(windowSize.height * 0.35);
-
-            await this.driver.touchAction([
-                { action: 'press', x: startX, y: startY },
-                { action: 'moveTo', x: startX, y: endY },
-                { action: 'release' }
-            ]);
-
-            console.log('Manual scroll executed.');
-        }
+    async acceptPrivacyPolicy() {
+        console.warn('acceptPrivacyPolicy() is deprecated. Use acceptSmsConsent() instead.');
+        await this.acceptSmsConsent();
     }
 }
 

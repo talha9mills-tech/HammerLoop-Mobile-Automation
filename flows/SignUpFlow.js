@@ -137,11 +137,12 @@ class SignUpFlow {
             user.password
         );
 
+        // UPDATED: Method names changed to match new checkbox locators
         await this.signUpPage
-            .acceptTermsAndConditions();
+            .acceptTerms();           // Previously: acceptTermsAndConditions()
 
         await this.signUpPage
-            .acceptPrivacyPolicy();
+            .acceptSmsConsent();      // Previously: acceptPrivacyPolicy()
 
         /* ===================================================== */
         /* STEP 4: Submit Signup                                 */
