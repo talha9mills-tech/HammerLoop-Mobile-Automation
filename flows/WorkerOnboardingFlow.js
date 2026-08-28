@@ -16,6 +16,9 @@ const locations =
 const hourlyRates =
     require('../data/fixtures/hourlyRates');
 
+const aboutWorker =
+    require('../data/fixtures/aboutWorker');
+
 const {
     getRandomItem,
     getRandomItems
@@ -116,6 +119,22 @@ class WorkerOnboardingFlow {
 
         await this.workerProfilePage
             .enterHourlyRate(rate);
+
+        /* ===================================================== */
+        /* Enter Random About You Description                    */
+        /* ===================================================== */
+
+        const aboutDescription =
+            getRandomItem(
+                aboutWorker
+            );
+
+        console.log(
+            `Selected About You description: ${aboutDescription.substring(0, 50)}...`
+        );
+
+        await this.workerProfilePage
+            .enterAboutYou(aboutDescription);
 
         /* ===================================================== */
         /* Save Worker Profile                                   */

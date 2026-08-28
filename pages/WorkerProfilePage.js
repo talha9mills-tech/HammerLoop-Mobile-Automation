@@ -46,6 +46,15 @@ class WorkerProfilePage {
             );
 
         /* ========================================================= */
+        /* About You                                                 */
+        /* ========================================================= */
+
+        this.aboutYouInput =
+            this.driver.$(
+                'android=new UiSelector().className("android.widget.EditText").instance(3)'
+            );
+
+        /* ========================================================= */
         /* Save & Continue                                           */
         /* ========================================================= */
 
@@ -210,16 +219,75 @@ class WorkerProfilePage {
     }
 
     /* ========================================================= */
+    /* Enter About You                                            */
+    /* ========================================================= */
+
+    async enterAboutYou(description) {
+
+        await this.driver.pause(300);
+
+        await this.aboutYouInput.waitForDisplayed({
+            timeout: 15000
+        });
+
+        await this.aboutYouInput.waitForEnabled({
+            timeout: 15000
+        });
+
+        await this.aboutYouInput.click();
+
+        await this.aboutYouInput.clearValue();
+
+        await this.aboutYouInput.setValue(
+            description
+        );
+
+        await this.driver.pause(200);
+
+        console.log(
+            `Entered About You description: ${description.substring(0, 50)}...`
+        );
+    }
+
+    /* ========================================================= */
     /* Save Worker Profile                                        */
     /* ========================================================= */
 
     async tapSaveAndContinue() {
+
+        await this.scrollToSaveAndContinue();
 
         await this.saveAndContinueButton.waitForDisplayed({
             timeout: 10000
         });
 
         await this.saveAndContinueButton.click();
+    }
+
+    /* ========================================================= */
+    /* Scroll To Save & Continue                                  */
+    /* ========================================================= */
+
+    async scrollToSaveAndContinue() {
+
+        const scrollableSelector =
+            'new UiScrollable(' +
+            'new UiSelector()' +
+            '.className("android.widget.ScrollView")' +
+            ')' +
+            '.scrollIntoView(' +
+            'new UiSelector()' +
+            '.description("Save & Continue")' +
+            ')';
+
+        const button =
+            this.driver.$(
+                `android=${scrollableSelector}`
+            );
+
+        await button.waitForDisplayed({
+            timeout: 10000
+        });
     }
 
     /* ========================================================= */

@@ -13,6 +13,9 @@ const trades =
 const locations =
     require('../data/fixtures/locations');
 
+const aboutCompanyDescriptions =
+    require('../data/fixtures/aboutCompany');
+
 const {
     getRandomItem,
     getRandomItems
@@ -83,6 +86,22 @@ class EmployerOnboardingFlow {
 
         await this.employerProfilePage
             .selectFirstLocationSuggestion(location);
+
+        /* ===================================================== */
+        /* Enter About Your Company                              */
+        /* ===================================================== */
+
+        const aboutCompany =
+            getRandomItem(
+                aboutCompanyDescriptions
+            );
+
+        console.log(
+            `Selected About Your Company: ${aboutCompany.substring(0, 50)}...`
+        );
+
+        await this.employerProfilePage
+            .enterAboutYourCompany(aboutCompany);
 
         /* ===================================================== */
         /* Save Employer Profile                                 */

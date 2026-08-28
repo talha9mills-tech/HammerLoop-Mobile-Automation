@@ -24,7 +24,7 @@ class EmployerProfilePage {
 
         this.tradeSearchInput =
             this.driver.$(
-                'android=new UiSelector().className("android.widget.EditText").instance(0)'
+                'android=new UiSelector().className("android.widget.EditText").instance(1)'
             );
 
         /* ========================================================= */
@@ -33,7 +33,16 @@ class EmployerProfilePage {
 
         this.locationSearchInput =
             this.driver.$(
-                'android=new UiSelector().className("android.widget.EditText").instance(1)'
+                'android=new UiSelector().className("android.widget.EditText").instance(2)'
+            );
+
+        /* ========================================================= */
+        /* About Your Company Input                                  */
+        /* ========================================================= */
+
+        this.aboutYourCompanyInput =
+            this.driver.$(
+                'android=new UiSelector().className("android.widget.EditText").instance(3)'
             );
 
         /* ========================================================= */
@@ -143,16 +152,69 @@ class EmployerProfilePage {
     }
 
     /* ========================================================= */
+    /* Enter About Your Company                                  */
+    /* ========================================================= */
+
+    async enterAboutYourCompany(description) {
+
+        await this.aboutYourCompanyInput.waitForDisplayed({
+            timeout: 15000
+        });
+
+        await this.aboutYourCompanyInput.click();
+
+        await this.aboutYourCompanyInput.clearValue();
+
+        await this.aboutYourCompanyInput.setValue(
+            description
+        );
+
+        await this.driver.pause(200);
+
+        console.log(
+            `Entered About Your Company: ${description.substring(0, 50)}...`
+        );
+    }
+
+    /* ========================================================= */
     /* Save Employer Profile                                      */
     /* ========================================================= */
 
     async tapSaveAndContinue() {
+
+        await this.scrollToSaveAndContinue();
 
         await this.saveAndContinueButton.waitForDisplayed({
             timeout: 10000
         });
 
         await this.saveAndContinueButton.click();
+    }
+
+    /* ========================================================= */
+    /* Scroll To Save & Continue                                  */
+    /* ========================================================= */
+
+    async scrollToSaveAndContinue() {
+
+        const scrollableSelector =
+            'new UiScrollable(' +
+            'new UiSelector()' +
+            '.className("android.widget.ScrollView")' +
+            ')' +
+            '.scrollIntoView(' +
+            'new UiSelector()' +
+            '.description("Save & Continue")' +
+            ')';
+
+        const button =
+            this.driver.$(
+                `android=${scrollableSelector}`
+            );
+
+        await button.waitForDisplayed({
+            timeout: 10000
+        });
     }
 
     /* ========================================================= */
