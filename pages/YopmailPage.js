@@ -13,6 +13,7 @@ class YopmailPage {
   /* ========================================================= */
   /* Open Yopmail Website                                      */
   /* ========================================================= */
+
   async open() {
 
     await this.browser.url(
@@ -23,6 +24,7 @@ class YopmailPage {
   /* ========================================================= */
   /* Open Inbox By Email Prefix                                */
   /* ========================================================= */
+
   async openInbox(inboxName) {
 
     const inboxInput =
@@ -43,12 +45,17 @@ class YopmailPage {
         'button[onclick="onLogin();"]'
       );
 
+    await checkInboxButton.waitForDisplayed({
+      timeout: 15000
+    });
+
     await checkInboxButton.click();
   }
 
   /* ========================================================= */
   /* Open Latest HammerLoop Email                              */
   /* ========================================================= */
+
   async openLatestHammerLoopEmail() {
 
     const mailFrame =
@@ -76,11 +83,16 @@ class YopmailPage {
     await latestEmail.click();
 
     await this.browser.switchToParentFrame();
+
+    console.log(
+      'Latest Yopmail email opened.'
+    );
   }
 
   /* ========================================================= */
   /* Extract OTP From Email Content                            */
   /* ========================================================= */
+
   async getOtp() {
 
     const mailContentFrame =
@@ -105,24 +117,60 @@ class YopmailPage {
       timeout: 20000
     });
 
-    const emailText =
-      await emailBody.getText();
+    /*
+     * The email body can become visible before the actual
+     * email content and OTP have finished rendering.
+     *
+     * Therefore, do not read the body only once.
+     * Poll the email content until the OTP appears.
+     */
+
+    const deadline =
+      Date.now() + 30000;
+
+    while (Date.now() < deadline) {
+
+      const emailText =
+        await emailBody.getText();
+
+      console.log(
+        'Checking Yopmail email content for OTP...'
+      );
+
+      const otpMatch =
+        emailText.match(
+          /\b\d{4,6}\b/
+        );
+
+      if (otpMatch) {
+
+        await this.browser.switchToParentFrame();
+
+        console.log(
+          `Extracted OTP: ${otpMatch[0]}`
+        );
+
+        return otpMatch[0];
+      }
+
+      /*
+       * Give Yopmail time to finish rendering the email
+       * before checking the content again.
+       */
+
+      await this.browser.pause(500);
+    }
+
+    /*
+     * Always return to the parent frame before throwing
+     * an error so the browser session is left in a clean state.
+     */
 
     await this.browser.switchToParentFrame();
 
-    const otpMatch =
-      emailText.match(
-        /\b\d{4,6}\b/
-      );
-
-    if (!otpMatch) {
-
-      throw new Error(
-        'OTP was not found in the Yopmail email.'
-      );
-    }
-
-    return otpMatch[0];
+    throw new Error(
+      'OTP was not found in the Yopmail email after waiting 30 seconds.'
+    );
   }
 }
 

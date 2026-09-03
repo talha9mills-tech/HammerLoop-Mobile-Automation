@@ -144,6 +144,10 @@ class EmployerProfilePage {
                 `android=new UiSelector().descriptionContains("${location}")`
             );
 
+        await suggestion.waitForExist({
+            timeout: 15000
+        });
+
         await suggestion.waitForDisplayed({
             timeout: 15000
         });

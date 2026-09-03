@@ -316,16 +316,20 @@ class CreateJobPage {
 
     async selectFirstLocationSuggestion(location) {
 
-        const option =
+        const suggestion =
             this.driver.$(
                 `android=new UiSelector().descriptionContains("${location}")`
             );
 
-        await option.waitForDisplayed({
+        await suggestion.waitForExist({
             timeout: 15000
         });
 
-        await option.click();
+        await suggestion.waitForDisplayed({
+            timeout: 15000
+        });
+
+        await suggestion.click();
     }
 
     /* ========================================================= */
