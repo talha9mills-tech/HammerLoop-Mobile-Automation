@@ -42,7 +42,7 @@ class WorkerProfilePage {
 
         this.hourlyRateInput =
             this.driver.$(
-                'android=new UiSelector().className("android.widget.EditText").instance(2)'
+                'android=new UiSelector().className("android.widget.EditText").instance(3)'
             );
 
         /* ========================================================= */
@@ -51,7 +51,7 @@ class WorkerProfilePage {
 
         this.aboutYouInput =
             this.driver.$(
-                'android=new UiSelector().className("android.widget.EditText").instance(3)'
+                'android=new UiSelector().className("android.widget.EditText").instance(2)'
             );
 
         /* ========================================================= */
