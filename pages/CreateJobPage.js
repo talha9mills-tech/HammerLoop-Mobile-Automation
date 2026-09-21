@@ -121,6 +121,20 @@ class CreateJobPage {
             driver.$('~View Job');
     }
 
+    /* ========================================================= */
+    /* Keyboard Helpers                                          */
+    /* ========================================================= */
+
+    /**
+     * Hides the keyboard ONLY if it is really showing.
+     *
+     * Same lesson as SignUpPage: a blind driver.hideKeyboard() can
+     * press BACK on Android and navigate away from the form when the
+     * keyboard is already closing/closed. The isKeyboardShown() guard
+     * prevents that.
+     *
+     * Returns true if a hide was performed, false otherwise.
+     */
     async hideKeyboardIfVisible() {
 
         try {
@@ -130,11 +144,87 @@ class CreateJobPage {
                 await this.driver.hideKeyboard();
 
                 await this.driver.pause(500);
+
+                return true;
             }
 
         } catch (error) {
-            // Keyboard wasn't visible
+            // Keyboard wasn't visible / couldn't be hidden - ignore.
         }
+
+        return false;
+    }
+
+    /**
+     * Reactive keyboard handling (same approach as SignUpPage.fillInput):
+     *
+     *  1. Give the field a short chance to be displayed.
+     *  2. If it is NOT displayed, the keyboard is most likely covering
+     *     it -> hide the keyboard (only if shown) and wait again.
+     *  3. Then click, clear and type.
+     *
+     * The keyboard is never hidden proactively, so it can't interfere
+     * with screens/steps where it isn't the problem.
+     */
+    async fillInput(input, value) {
+
+        try {
+
+            await input.waitForDisplayed({
+                timeout: 3000
+            });
+
+        } catch {
+
+            /* Field is likely below the keyboard.
+            Hide the keyboard and try again. */
+
+            await this.hideKeyboardIfVisible();
+
+            await input.waitForDisplayed({
+                timeout: 15000
+            });
+        }
+
+        try {
+
+            await input.scrollIntoView();
+
+        } catch {
+
+            // Ignore if the driver doesn't support it.
+        }
+
+        await input.click();
+
+        await input.clearValue();
+
+        await input.setValue(String(value));
+    }
+
+    /**
+     * Same idea for buttons (Next Step / Post Job): if the button is
+     * not displayed because the keyboard is covering it, hide the
+     * keyboard (only if shown) and retry before tapping.
+     */
+    async tapButton(button) {
+
+        try {
+
+            await button.waitForDisplayed({
+                timeout: 3000
+            });
+
+        } catch {
+
+            await this.hideKeyboardIfVisible();
+
+            await button.waitForDisplayed({
+                timeout: 15000
+            });
+        }
+
+        await button.click();
     }
 
     /* ========================================================= */
@@ -165,15 +255,10 @@ class CreateJobPage {
 
     async searchTrade(trade) {
 
-        await this.tradesDropdownInput.waitForDisplayed({
-            timeout: 15000
-        });
-
-        await this.tradesDropdownInput.click();
-
-        await this.tradesDropdownInput.clearValue();
-
-        await this.tradesDropdownInput.setValue(trade);
+        await this.fillInput(
+            this.tradesDropdownInput,
+            trade
+        );
     }
 
     async selectTrade(trade) {
@@ -194,41 +279,27 @@ class CreateJobPage {
 
     async enterJobTitle(jobTitle) {
 
-        await this.jobNameInput.waitForDisplayed({
-            timeout: 15000
-        });
-
-        await this.jobNameInput.click();
-
-        await this.jobNameInput.clearValue();
-
-        await this.jobNameInput.setValue(jobTitle);
-
-        //await this.hideKeyboardIfVisible();
+        await this.fillInput(
+            this.jobNameInput,
+            jobTitle
+        );
     }
 
     async enterJobDescription(description) {
 
-        await this.jobDescriptionInput.waitForDisplayed({
-            timeout: 15000
-        });
-
-        await this.jobDescriptionInput.click();
-
-        await this.jobDescriptionInput.clearValue();
-
-        await this.jobDescriptionInput.setValue(description);
-
-        //await this.hideKeyboardIfVisible();
+        // Keyboard from the title field may still be open and hiding
+        // this field -> fillInput() handles that automatically.
+        await this.fillInput(
+            this.jobDescriptionInput,
+            description
+        );
     }
 
     async tapNextStep() {
 
-        await this.nextStepButton.waitForDisplayed({
-            timeout: 15000
-        });
-
-        await this.nextStepButton.click();
+        await this.tapButton(
+            this.nextStepButton
+        );
     }
 
     /* ========================================================= */
@@ -252,17 +323,10 @@ class CreateJobPage {
 
     async enterDuration(days) {
 
-        await this.durationInput.waitForDisplayed({
-            timeout: 15000
-        });
-
-        await this.durationInput.click();
-
-        await this.durationInput.clearValue();
-
-        await this.durationInput.setValue(String(days));
-
-        //await this.hideKeyboardIfVisible();
+        await this.fillInput(
+            this.durationInput,
+            days
+        );
     }
 
     /* ========================================================= */
@@ -271,17 +335,10 @@ class CreateJobPage {
 
     async enterPayRate(rate) {
 
-        await this.payRateInput.waitForDisplayed({
-            timeout: 15000
-        });
-
-        await this.payRateInput.click();
-
-        await this.payRateInput.clearValue();
-
-        await this.payRateInput.setValue(String(rate));
-
-        //await this.hideKeyboardIfVisible();
+        await this.fillInput(
+            this.payRateInput,
+            rate
+        );
     }
 
     /* ========================================================= */
@@ -303,15 +360,10 @@ class CreateJobPage {
 
     async searchLocation(location) {
 
-        await this.locationInput.waitForDisplayed({
-            timeout: 15000
-        });
-
-        await this.locationInput.click();
-
-        await this.locationInput.clearValue();
-
-        await this.locationInput.setValue(location);
+        await this.fillInput(
+            this.locationInput,
+            location
+        );
     }
 
     async selectFirstLocationSuggestion(location) {
@@ -337,10 +389,11 @@ class CreateJobPage {
     /* ========================================================= */
 
     async searchCertification(trade) {
-        await this.certificationInput.waitForDisplayed({ timeout: 15000 });
-        await this.certificationInput.click();
-        await this.certificationInput.clearValue();
-        await this.certificationInput.setValue(trade);
+
+        await this.fillInput(
+            this.certificationInput,
+            trade
+        );
     }
 
     async getAllCertificationOptions() {
@@ -537,11 +590,9 @@ class CreateJobPage {
 
     async tapPostJob() {
 
-        await this.postJobButton.waitForDisplayed({
-            timeout: 15000
-        });
-
-        await this.postJobButton.click();
+        await this.tapButton(
+            this.postJobButton
+        );
     }
 
     async verifyJobPostedSuccessfully() {
