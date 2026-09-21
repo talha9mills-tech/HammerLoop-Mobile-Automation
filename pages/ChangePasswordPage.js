@@ -20,30 +20,30 @@ class ChangePasswordPage {
             );
 
         /* ========================================================= */
-        /* Current Password Input                                     */
+        /* Current Password Input                                    */
         /* ========================================================= */
 
         this.currentPasswordInput =
             driver.$(
-                'android=new UiSelector().className("android.widget.EditText").instance(0)'
+                'android=new UiSelector().resourceId("current_password_field")'
             );
 
         /* ========================================================= */
-        /* New Password Input                                          */
+        /* New Password Input                                        */
         /* ========================================================= */
 
         this.newPasswordInput =
             driver.$(
-                'android=new UiSelector().className("android.widget.EditText").instance(1)'
+                'android=new UiSelector().resourceId("new_password_field")'
             );
 
         /* ========================================================= */
-        /* Confirm New Password Input                                  */
+        /* Confirm New Password Input                                */
         /* ========================================================= */
 
         this.confirmNewPasswordInput =
             driver.$(
-                'android=new UiSelector().className("android.widget.EditText").instance(2)'
+                'android=new UiSelector().resourceId("confirm_new_password_field")'
             );
 
         /* ========================================================= */

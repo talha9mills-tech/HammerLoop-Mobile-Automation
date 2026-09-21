@@ -376,17 +376,25 @@ class EmployerPasswordFlow {
 
     async openProfileMenu() {
 
-        const imageView =
+        const profileImage =
             this.driver.$(
-                'android=new UiSelector().className("android.widget.ImageView")'
+                'android=new UiSelector().className("android.widget.ImageView").instance(0)'
             );
 
-        await imageView
-            .waitForDisplayed({
-                timeout: 15000
-            });
+        const profileInitials =
+            this.driver.$(
+                'android=new UiSelector().description("AW")'
+            );
 
-        await imageView.click();
+        if (await profileImage.isDisplayed().catch(() => false)) {
+            await profileImage.click();
+        } else if (await profileInitials.isDisplayed().catch(() => false)) {
+            await profileInitials.click();
+        } else {
+            throw new Error(
+                'Profile menu element was not found.'
+            );
+        }
 
         console.log(
             'Profile menu opened.'
