@@ -98,10 +98,25 @@ class SignUpPage {
         );
     }
 
-    getSmsConsentCheckbox() {
+    /* ========================================================= */
+    /* Transactional SMS Consent Checkbox                         */
+    /* ========================================================= */
+
+    getSmsConsentTransactionalCheckbox() {
 
         return this.driver.$(
-            'android=new UiSelector().resourceId("sms_consent_checkbox")'
+            'android=new UiSelector().resourceId("sms_consent_checkbox_transactional")'
+        );
+    }
+
+    /* ========================================================= */
+    /* Marketing SMS Consent Checkbox                             */
+    /* ========================================================= */
+
+    getSmsConsentMarketingCheckbox() {
+
+        return this.driver.$(
+            'android=new UiSelector().resourceId("sms_consent_checkbox_marketing")'
         );
     }
 
@@ -201,41 +216,76 @@ class SignUpPage {
     }
 
     /* ========================================================= */
-    /* SMS Consent                                               */
+    /* Transactional SMS Consent                                 */
     /* ========================================================= */
 
-    async acceptSmsConsent() {
+    async acceptSmsConsentTransactional() {
 
-        console.log('Accepting SMS Consent...');
-        
+        console.log('Accepting Transactional SMS Consent...');
+
         // Get fresh checkbox
-        const checkbox = this.getSmsConsentCheckbox();
-        
+        const checkbox = this.getSmsConsentTransactionalCheckbox();
+
         // Check if already displayed
         if (await checkbox.isDisplayed()) {
-            console.log('SMS Consent checkbox is already displayed!');
-            await this.clickCheckboxWithDebug(checkbox, 'SMS Consent');
+            console.log('Transactional SMS Consent checkbox is already displayed!');
+            await this.clickCheckboxWithDebug(checkbox, 'Transactional SMS Consent');
             return;
         }
-        
+
         // If not displayed, scroll and click
-        const scrolledCheckbox = await this.scrollCheckboxIntoView('sms_consent_checkbox');
-        await this.clickCheckboxWithDebug(scrolledCheckbox, 'SMS Consent');
+        const scrolledCheckbox = await this.scrollCheckboxIntoView('sms_consent_checkbox_transactional');
+        await this.clickCheckboxWithDebug(scrolledCheckbox, 'Transactional SMS Consent');
     }
 
     /* ========================================================= */
-    /* Create Account - FIXED: No keyboard hide!                */
+    /* Marketing SMS Consent                                     */
+    /* ========================================================= */
+
+    async acceptSmsConsentMarketing() {
+
+        console.log('Accepting Marketing SMS Consent...');
+
+        // Get fresh checkbox
+        const checkbox = this.getSmsConsentMarketingCheckbox();
+
+        // Check if already displayed
+        if (await checkbox.isDisplayed()) {
+            console.log('Marketing SMS Consent checkbox is already displayed!');
+            await this.clickCheckboxWithDebug(checkbox, 'Marketing SMS Consent');
+            return;
+        }
+
+        // If not displayed, scroll and click
+        const scrolledCheckbox = await this.scrollCheckboxIntoView('sms_consent_checkbox_marketing');
+        await this.clickCheckboxWithDebug(scrolledCheckbox, 'Marketing SMS Consent');
+    }
+
+    /**
+     * Convenience helper: accepts both SMS consent checkboxes
+     * (transactional + marketing) in one call, for flows that always
+     * want both checked.
+     */
+    async acceptAllSmsConsents() {
+
+        await this.acceptSmsConsentTransactional();
+        await this.acceptSmsConsentMarketing();
+    }
+
+    /* ========================================================= */
+    /* Create Account - guarded keyboard hide + scroll fallback  */
     /* ========================================================= */
 
     async tapCreateAccount() {
 
         console.log('Attempting to click Create Account button...');
 
-        // IMPORTANT FIX: Do NOT hide keyboard here!
-        // The keyboard hide action is causing navigation away from the form.
-        // The keyboard should already be hidden after filling the last field.
-        // If keyboard is still showing, the user can tap the button which will
-        // automatically dismiss the keyboard and submit the form.
+        // NOTE: We do NOT blindly call driver.hideKeyboard() up front.
+        // On Android, hideKeyboard() can fall back to pressing BACK when
+        // no keyboard is actually shown, which was navigating us away
+        // from the form. Instead, inside the retry loop below, we only
+        // hide the keyboard if driver.isKeyboardShown() confirms it is
+        // really covering the button.
 
         // Get fresh button
         const button = this.getCreateAccountButton();
@@ -253,6 +303,48 @@ class SignUpPage {
                 break;
             } catch (error) {
                 console.log(`Create Account button not found, attempt ${attempt + 1}/5`);
+
+                // Safe, guarded hide: only act if the keyboard is really up.
+                // 'mobile: hideKeyboard' is the more reliable UiAutomator2 way
+                // to dismiss it - driver.hideKeyboard() alone was not always
+                // closing this particular field.
+                try {
+                    if (await this.driver.isKeyboardShown()) {
+                        console.log('Keyboard is covering the Create Account button - hiding it...');
+
+                        try {
+                            await this.driver.execute('mobile: hideKeyboard');
+                        } catch (mobileHideError) {
+                            await this.driver.hideKeyboard();
+                        }
+
+                        await this.driver.pause(500);
+                    }
+                } catch (kbError) {
+                    // isKeyboardShown()/hideKeyboard() not supported or failed - ignore.
+                }
+
+                // The button can also simply be off-screen (below the fold),
+                // independent of the keyboard - e.g. Flutter hasn't rendered
+                // it into the accessibility tree yet. Try scrolling it into
+                // view the same way we do for the checkboxes.
+                try {
+                    const scrolledButton = this.driver.$(
+                        'android=new UiScrollable(new UiSelector().scrollable(true))' +
+                        '.scrollIntoView(new UiSelector().resourceId("create_account_button"))'
+                    );
+
+                    await scrolledButton.waitForDisplayed({
+                        timeout: 3000
+                    });
+
+                    found = true;
+                    console.log(`Create Account button found after scrolling, attempt ${attempt + 1}`);
+                    break;
+                } catch (scrollError) {
+                    // Not scrollable, already visible, or still not found - keep retrying.
+                }
+
                 await this.driver.pause(500);
             }
         }
@@ -270,8 +362,14 @@ class SignUpPage {
             throw new Error('Create Account button not found after multiple attempts');
         }
 
+        // Re-fetch a fresh handle now that we know it's found/displayed -
+        // whether we found it via the initial waitForDisplayed or via the
+        // scroll fallback, `button` may otherwise point at a stale/never-
+        // resolved element.
+        const freshButton = this.getCreateAccountButton();
+
         // Check if button is enabled
-        const isEnabled = await button.isEnabled();
+        const isEnabled = await freshButton.isEnabled();
         console.log(`Create Account button enabled: ${isEnabled}`);
 
         if (!isEnabled) {
@@ -279,7 +377,7 @@ class SignUpPage {
         }
 
         // Click the button
-        await button.click();
+        await freshButton.click();
         console.log('Create Account button clicked successfully.');
     }
 
@@ -422,9 +520,14 @@ class SignUpPage {
         await this.acceptTerms();
     }
 
+    /**
+     * Deprecated: the old single SMS consent checkbox was split into
+     * two separate checkboxes (transactional + marketing). This now
+     * accepts both, for callers that haven't migrated yet.
+     */
     async acceptPrivacyPolicy() {
-        console.warn('acceptPrivacyPolicy() is deprecated. Use acceptSmsConsent() instead.');
-        await this.acceptSmsConsent();
+        console.warn('acceptPrivacyPolicy() is deprecated. Use acceptSmsConsentTransactional() and acceptSmsConsentMarketing() instead.');
+        await this.acceptAllSmsConsents();
     }
 }
 
